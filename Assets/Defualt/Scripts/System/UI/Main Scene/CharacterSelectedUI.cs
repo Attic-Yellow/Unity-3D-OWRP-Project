@@ -76,8 +76,7 @@ public class CharacterSelectedUI : MonoBehaviour
     // 캐릭터 생성 버튼 클릭 메서드
     public void OnCreateButtonClick()
     {
-        GameManager.Instance.uiManager.mainSceneUI.characterCreateUI.gameObject.SetActive(true);
-        gameObject.SetActive(false);
+        GameManager.Instance.uiManager.mainSceneUI.MainScenePageController();
     }
 
     // 캐릭터 로드 완료 시 호출될 메서드
