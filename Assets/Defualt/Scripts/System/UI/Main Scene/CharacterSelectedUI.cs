@@ -14,9 +14,6 @@ public class CharacterSelectedUI : MonoBehaviour
     [SerializeField] private GameObject characterButtonPrefab;
     [SerializeField] private List<GameObject> characterButton;
 
-    [SerializeField] private bool isClickOne;
-    [SerializeField] private bool isClickTwo;
-
     private int serverNumber;
 
     private void Awake()
@@ -83,19 +80,6 @@ public class CharacterSelectedUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private void OnButtonClick()
-    {
-        if (!isClickOne)
-        {
-            isClickOne = true;
-        }
-        else
-        {
-            isClickTwo = isClickOne;
-            InitButtonState();
-        }
-    }
-
     // 캐릭터 로드 완료 시 호출될 메서드
     private void OnCharacterLoaded(List<Dictionary<string, object>> charactersData)
     {
@@ -128,11 +112,5 @@ public class CharacterSelectedUI : MonoBehaviour
                 }
             }
         }
-    }
-
-    private void InitButtonState()
-    {
-        isClickOne = false;
-        isClickTwo = false;
     }
 }
