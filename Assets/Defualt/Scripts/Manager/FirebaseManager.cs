@@ -8,6 +8,7 @@ using System;
 using Firebase.Auth;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 public class FirebaseManager : MonoBehaviour
 {
@@ -83,6 +84,39 @@ public class FirebaseManager : MonoBehaviour
         });
     }
 
+    /*** 업로드 ***/
+
+    // 캐릭터 생성 및 Firestore에 업로드하는 메서드
+    public async Task CreateCharacter(string userId, string serverName, string characterName)
+    {
+        try
+        {
+            // Firestore에서 Unique ID 생성으로 캐릭터 ID 생성
+            var characterId = db.Collection("dummy").Document().Id;
+
+            // 캐릭터 데이터 구성
+            var characterData = new Dictionary<string, object>
+            {
+                { "name", characterName }
+                // 다른 필요한 기본 캐릭터 정보 추가 가능
+            };
+
+            // 데이터 업로드 경로 설정: users/{userId}/{serverName}/{characterId}
+            DocumentReference docRef = db.Collection("users").Document(userId)
+                .Collection(serverName).Document(characterId);
+
+            // Firestore에 캐릭터 데이터 업로드
+            await docRef.SetAsync(characterData);
+            Debug.Log($"캐릭터 {characterName} 생성 및 업로드 완료.");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"캐릭터 생성 중 오류 발생: {e.Message}");
+        }
+    }
+
+    /*** 로드 ***/
+
     // 사용자 데이터 로드
     public async void LoadUserData(string userId, Action<Dictionary<string, object>> onCompletion)
     {
@@ -103,6 +137,40 @@ public class FirebaseManager : MonoBehaviour
         catch (Exception ex)
         {
             print($"유저 데이터 로드 중 오류 발생: {ex.Message}");
+            onCompletion(null);
+        }
+    }
+
+    // 캐릭터 로드
+    public async Task LoadCharacter(string userId, Action<List<Dictionary<string, object>>> onCompletion)
+    {
+        try
+        {
+            var userDocRef = db.Collection("users").Document(userId); // "users" 컬렉션에서 로그인된 사용자의 문서를 탐색
+            var userSnapshot = await userDocRef.GetSnapshotAsync();
+
+            if (!userSnapshot.Exists)
+            {
+                print("사용자 정보를 찾을 수 없습니다.");
+                onCompletion(null);
+                return;
+            }
+            
+            var serverCharactersRef = userDocRef.Collection("testServer");  // 가져온 서버 이름으로 서버 컬렉션 내의 모든 캐릭터 문서를 조회
+            var querySnapshot = await serverCharactersRef.GetSnapshotAsync();
+
+            var characters = new List<Dictionary<string, object>>();
+            foreach (var document in querySnapshot.Documents)
+            {
+                var character = document.ToDictionary();
+                characters.Add(character);
+            }
+
+            onCompletion(characters);
+        }
+        catch (Exception e)
+        {
+            print($"캐릭터 로드 중 오류 발생: {e.Message}");
             onCompletion(null);
         }
     }
