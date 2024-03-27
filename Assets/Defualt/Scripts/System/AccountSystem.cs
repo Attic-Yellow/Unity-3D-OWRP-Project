@@ -89,6 +89,7 @@ public class AccountSystem : MonoBehaviour
         {
             GameManager.Instance.OnLoginSuccess(); // 로그인 성공 후 처리
             InitInputField();
+            GameManager.Instance.uiManager.startSceneUI.OnAccountButtonClick();
         }
         /* 
                 <모바일에서 사용 가능 기능>

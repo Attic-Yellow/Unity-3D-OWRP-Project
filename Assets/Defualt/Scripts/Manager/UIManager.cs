@@ -11,5 +11,9 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.uiManager = this;
     }
 
-
+    // 종료 메서드
+    public void OnExitGame()
+    {
+        Application.Quit();
+    }
 }

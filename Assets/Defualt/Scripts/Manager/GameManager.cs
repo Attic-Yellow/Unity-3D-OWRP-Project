@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public FirebaseManager firebaseManager;
     public AuthManager authManager;
     public UIManager uiManager;
+    public SceneLoadManager sceneLoadManager;
 
     [Header("유저 데이터")]
     private bool isUserGuest = false;
@@ -23,6 +24,7 @@ public class GameManager : MonoBehaviour
 
     [Header("게임 데이터")]
     private bool isDataLoaded;
+    private bool isSignInSuccess;
 
     [Serializable]
     private class UserData
@@ -56,9 +58,8 @@ public class GameManager : MonoBehaviour
     // 로그인 성공 시 호출되는 콜백 메서드
     public void OnLoginSuccess()
     {
-        
+        SetIsSignInSuccess(!isSignInSuccess);
     }
-
 
     // 파이어 베이스 매니저 초기화 확인 메서드
     private IEnumerator CheckAutoLoginWhenReady()
@@ -171,5 +172,15 @@ public class GameManager : MonoBehaviour
     public bool GetIsChangedToEmailAccount()
     {
         return isChangedToEmailAccount;
+    }
+
+    public void SetIsSignInSuccess(bool isSignInSuccess)
+    {
+        this.isSignInSuccess = isSignInSuccess;
+    }
+
+    public bool GetIsSignInSuccess()
+    {
+        return isSignInSuccess;
     }
 }
