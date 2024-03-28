@@ -87,32 +87,117 @@ public class FirebaseManager : MonoBehaviour
     /*** 업로드 ***/
 
     // 캐릭터 생성 및 Firestore에 업로드하는 메서드
-    public async Task CreateCharacter(string userId, string serverName, string characterName)
+    public async Task<bool> CreateCharacter(string userId, string job, string tribe, string serverName, string characterName)
     {
+        bool isCharacterCreated = false;
+
+        print($"{job}, {tribe}, {serverName}, {characterName}");
         try
         {
-            // Firestore에서 Unique ID 생성으로 캐릭터 ID 생성
-            var characterId = db.Collection("dummy").Document().Id;
+            /*** 기본 스탯 ***/
+            int totalSTR = 0; // 힘 (striking power)
+            int totalINT = 0; // 지능 (intelligence)
+            int totalDEX = 0; // 민첩 (dexterity)
+            int totalSPI = 0; // 정신력 (spirit)
+            int totalVIT = 0; // 활력 (vitality)
 
-            // 캐릭터 데이터 구성
-            var characterData = new Dictionary<string, object>
+            /*** 전투 스탯 ***/
+            int totalCRT = 0; // 극대,치명타 (critical hit)
+            int totalDH = 0; // 직격,명중 (direct hit rate)
+            int totalDET = 0; // 의지,결의 (determination)
+            int totalSKS = 0; // 기술 시전 속도,물리 공격 속도 (skill speed)
+            int totalSPS = 0; // 마법 시전 속도,주문 속도 (spell speed)
+            int totalTEN = 0; // 불굴,인내 (tenacity)
+            int totalPIE = 0; // 신앙,마나 (piety)
+
+            /*** 방어 스탯***/
+            int totalDEF = 0; // 물리 방어력 (defense)
+            int totalMDF = 0; // 마법 방어력 (magic defense)
+
+            /*** 기타 스탯***/
+            int totalLUK = 0; // 운 (luck)
+
+            var JobStatus = await db.Collection("createCharacterJob").Document(job).GetSnapshotAsync();
+            if (JobStatus.Exists)
             {
-                { "name", characterName }
-                // 다른 필요한 기본 캐릭터 정보 추가 가능
+                print(totalSTR);
+                print(JobStatus.GetValue<int>("str"));
+                totalSTR += JobStatus.GetValue<int>("str");
+                totalINT += JobStatus.GetValue<int>("int");
+                totalDEX += JobStatus.GetValue<int>("dex");
+                totalSPI += JobStatus.GetValue<int>("spi");
+                totalVIT += JobStatus.GetValue<int>("vit");
+                totalCRT += JobStatus.GetValue<int>("crt");
+                totalDH += JobStatus.GetValue<int>("dh");
+                totalDET += JobStatus.GetValue<int>("det");
+                totalSKS += JobStatus.GetValue<int>("sks");
+                totalSPS += JobStatus.GetValue<int>("sps");
+                totalTEN += JobStatus.GetValue<int>("ten");
+                totalPIE += JobStatus.GetValue<int>("pie");
+                totalDEF += JobStatus.GetValue<int>("def");
+                totalMDF += JobStatus.GetValue<int>("mef");
+                totalLUK += JobStatus.GetValue<int>("luk");
+            }
+
+            var TribeStatus = await db.Collection("createCharacter").Document(tribe).GetSnapshotAsync();
+            if (TribeStatus.Exists)
+            {
+                totalSTR += TribeStatus.GetValue<int>("str");
+                totalINT += TribeStatus.GetValue<int>("int");
+                totalDEX += TribeStatus.GetValue<int>("dex");
+                totalSPI += TribeStatus.GetValue<int>("spi");
+                totalVIT += TribeStatus.GetValue<int>("vit");
+                totalCRT += TribeStatus.GetValue<int>("crt");
+                totalDH += TribeStatus.GetValue<int>("dh");
+                totalDET += TribeStatus.GetValue<int>("det");
+                totalSKS += TribeStatus.GetValue<int>("sks");
+                totalSPS += TribeStatus.GetValue<int>("sps");
+                totalTEN += TribeStatus.GetValue<int>("ten");
+                totalPIE += TribeStatus.GetValue<int>("pie");
+                totalDEF += TribeStatus.GetValue<int>("def");
+                totalMDF += TribeStatus.GetValue<int>("mef");
+                totalLUK += TribeStatus.GetValue<int>("luk");
+            }
+
+            Dictionary<string, object> newCharacter = new Dictionary<string, object>
+            {
+                { "name", characterName },
+                { "job", job },
+                { "tribe", tribe },
+                { "str", totalSTR},
+                { "int", totalINT},
+                { "dex", totalDEX},
+                { "spi", totalSPI},
+                { "vit", totalVIT},
+                { "crt", totalCRT},
+                { "dh", totalDH},
+                { "det", totalDET},
+                { "sks", totalSKS},
+                { "sps", totalSPS},
+                { "ten", totalTEN},
+                { "pie", totalPIE},
+                { "def", totalDEF},
+                { "mdf", totalMDF},
+                { "luk", totalLUK}
             };
 
+            string uniqueCharacterID = System.Guid.NewGuid().ToString();
+
             // 데이터 업로드 경로 설정: users/{userId}/{serverName}/{characterId}
-            DocumentReference docRef = db.Collection("users").Document(userId)
-                .Collection(serverName).Document(characterId);
+            DocumentReference docRef = db.Collection("users").Document(userId).Collection(serverName).Document(uniqueCharacterID);
 
             // Firestore에 캐릭터 데이터 업로드
-            await docRef.SetAsync(characterData);
-            Debug.Log($"캐릭터 {characterName} 생성 및 업로드 완료.");
+            await docRef.SetAsync(newCharacter);
+            isCharacterCreated = true;
+            print($"캐릭터 {characterName} 생성 및 업로드 완료.");
         }
         catch (Exception e)
         {
-            Debug.LogError($"캐릭터 생성 중 오류 발생: {e.Message}");
+            isCharacterCreated = false;
+            print($"캐릭터 생성 중 오류 발생: {e.Message}");
         }
+
+        return isCharacterCreated;
     }
 
     /*** 로드 ***/
@@ -156,7 +241,7 @@ public class FirebaseManager : MonoBehaviour
                 return;
             }
             
-            var serverCharactersRef = userDocRef.Collection("testServer");  // 가져온 서버 이름으로 서버 컬렉션 내의 모든 캐릭터 문서를 조회
+            var serverCharactersRef = userDocRef.Collection("server1");  // 가져온 서버 이름으로 서버 컬렉션 내의 모든 캐릭터 문서를 조회
             var querySnapshot = await serverCharactersRef.GetSnapshotAsync();
 
             var characters = new List<Dictionary<string, object>>();

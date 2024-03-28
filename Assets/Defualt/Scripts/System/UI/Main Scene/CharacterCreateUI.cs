@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Firebase.Auth;
+using Unity.VisualScripting;
+using System.Threading.Tasks;
 
 public class CharacterCreateUI : MonoBehaviour
 {
@@ -24,9 +27,9 @@ public class CharacterCreateUI : MonoBehaviour
 
     enum Server
     {
-        Server1,
-        Server2,
-        Server3
+        server1,
+        server2,
+        server3
     }
 
     [SerializeField] private List<GameObject> characterCreationAreas;
@@ -130,6 +133,7 @@ public class CharacterCreateUI : MonoBehaviour
         if (timeSinceLastClick <= doubleClickThreshold) // 더블 클릭으로 간주되는 경우
         {
             job = ((Job)jobNum).ToString(); // 선택한 직업을 문자열로 저장
+            print(job);
             currentAreaIndex++;
             CreationAreasController(currentAreaIndex);
         }
@@ -149,6 +153,7 @@ public class CharacterCreateUI : MonoBehaviour
         if (timeSinceLastClick <= doubleClickThreshold) // 더블 클릭으로 간주되는 경우
         {
             tribe = ((Tribe)tribeNum).ToString(); // 선택한 종족을 문자열로 저장
+            print(tribe);
             currentAreaIndex++;
             CreationAreasController(currentAreaIndex);
         }
@@ -162,6 +167,8 @@ public class CharacterCreateUI : MonoBehaviour
     public void OnNameInputFieldEndEdit()
     {
         // ToDo : 입력한 이름을 저장
+        characterName = nameInputField.text;
+        print(characterName);
         currentAreaIndex++;
         CreationAreasController(currentAreaIndex);
     }
@@ -175,8 +182,8 @@ public class CharacterCreateUI : MonoBehaviour
         if (timeSinceLastClick <= doubleClickThreshold) // 더블 클릭으로 간주되는 경우
         {
             server = ((Server)serverNum).ToString(); // 선택한 서버를 문자열로 저장
-            // ToDo : 캐릭터 생성 처리
-            GameManager.Instance.uiManager.mainSceneUI.MainScenePageController();
+            print(server);
+            CreateCharacterCallBack();
         }
     }
 
@@ -190,7 +197,25 @@ public class CharacterCreateUI : MonoBehaviour
         }
         else
         {            
-            GameManager.Instance.uiManager.mainSceneUI.MainScenePageController();
+            GameManager.Instance.uiManager.mainSceneUI.MainSceneInit();
+        }
+    }
+
+    // 캐릭터 생성 메서드
+    private async void CreateCharacterCallBack()
+    {
+        var user = FirebaseAuth.DefaultInstance.CurrentUser;
+
+        bool isCharacterCreated = await GameManager.Instance.firebaseManager.CreateCharacter(user.UserId, job, tribe, server, characterName);
+
+        if (isCharacterCreated)
+        {
+            print("캐릭터 생성에 성공하였습니다");
+            GameManager.Instance.uiManager.mainSceneUI.MainSceneInit();
+        }
+        else
+        {
+            print("캐릭터 생성에 실패하였습니다");
         }
     }
 }
