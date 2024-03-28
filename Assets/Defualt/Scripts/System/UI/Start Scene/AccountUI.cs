@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class AccountUI : MonoBehaviour
 {
+    [SerializeField] private List<GameObject> uiAreas;
     [SerializeField] private GameObject inputFieldUIArea;
-    [SerializeField] private GameObject signinUIArea;
-    [SerializeField] private GameObject signupUIArea;
-    [SerializeField] private GameObject emailVerificationArea;
+
+    [SerializeField] private int currentAreaIndex = 0;
 
     private void Awake()
     {
@@ -16,72 +16,65 @@ public class AccountUI : MonoBehaviour
 
     private void Start()
     {
-        AllAreaClose();
-    }
-
-    /*** UI Area 활성화 비활성화 ***/
-
-    // 계정 UI 활성화/비활성화 컨트롤러 메서드
-    public void InputFieldUIPageController()
-    {
-        if (inputFieldUIArea != null)
-        {
-            inputFieldUIArea.SetActive(!inputFieldUIArea.activeInHierarchy);
-        }
-    }
-
-    // 로그인 UI 활성화/비활성화 컨트롤러 메서드
-    public void SigninUIPageController()
-    {
-        if (signinUIArea != null)
-        {
-            signinUIArea.SetActive(!signinUIArea.activeInHierarchy);
-        }
-    }
-
-    // 회원 가입 UI 활성화/비활성화 컨트롤러 메서드
-    public void SignupUIPageController()
-    {
-        if (signupUIArea != null)
-        {
-            signupUIArea.SetActive(!signupUIArea.activeInHierarchy);
-        }
-    }
-
-    // 이메일 인증 UI 활성화/비활성화 컨트롤러 메서드
-    public void EmailVerificationPageController()
-    {
-        if (emailVerificationArea != null)
-        {
-            emailVerificationArea.SetActive(!emailVerificationArea.activeInHierarchy);
-        }
-    }
-
-    // 모든 UI를 비활성화 하는 메서드
-    public void AllAreaClose()
-    {
         if (inputFieldUIArea != null)
         {
             inputFieldUIArea.SetActive(false);
         }
 
-        if (signinUIArea != null)
+        if (uiAreas.Count > 0)
         {
-            signinUIArea.SetActive(false);
+            Init();
         }
+    }
 
-        if (signupUIArea != null)
+    public void Init()
+    {
+        for (int i = 0; i < uiAreas.Count; i++)
         {
-            signupUIArea.SetActive(false);
+            uiAreas[i].SetActive(false);
         }
+    }    
 
-        if (emailVerificationArea != null)
+    /*** UI Area 활성화 비활성화 ***/
+
+    // 계정 UI 활성화/비활성화 컨트롤러 메서드
+    public void InputFieldUIController(int index)
+    {
+        if (index == 0 || index == 1)
         {
-            emailVerificationArea.SetActive(false);
+            inputFieldUIArea.SetActive(true);
+        }
+        else
+        {
+            inputFieldUIArea.SetActive(false);
+        }
+    }
+
+    // 계정 UI 영역 컨트롤러
+    public void UIAreaIndexController(int index)
+    {
+        for (int i = 0; i < uiAreas.Count; i++)
+        {
+            uiAreas[i].SetActive(i == index);
         }
     }
 
     /*** 버튼 클릭 시 기능 ***/
+
+    // 뒤로가기 버튼
+    public void OnBackButtonClick()
+    {
+        if (currentAreaIndex == 0)
+        {
+            GameManager.Instance.uiManager.startSceneUI.accountUIPageController();
+            GameManager.Instance.uiManager.startSceneUI.AccountButtonController();
+            Init();
+            return;
+        }
+        currentAreaIndex--;
+        InputFieldUIController(currentAreaIndex);
+        UIAreaIndexController(currentAreaIndex);
+    }
 
     // 로그인 버튼 
     public void OnSigninButtonClick()
@@ -91,21 +84,16 @@ public class AccountUI : MonoBehaviour
     }
 
     // 회원 가입 버튼
-    public void OnSignupButtonClick()
+    public void OnSignupButtonClick(int index)
     {
-        if (signinUIArea.activeInHierarchy && !signupUIArea.activeInHierarchy)
-        {
-            SigninUIPageController();
-            SignupUIPageController();
-        }
-        else
+        if (index == 2)
         {
             AccountSystem accountSystem = FindAnyObjectByType<AccountSystem>();
             accountSystem.OnSignupButtonCallBack();
-            EmailVerificationPageController(); // 이메일 인증 안내 UI 활성화
-            InputFieldUIPageController();
-            SignupUIPageController(); // 회원가입 UI 비활성화
         }
+        currentAreaIndex = index;
+        InputFieldUIController(index);
+        UIAreaIndexController(index);
     }
 
     // 비밀 번호 찾기 버튼
@@ -119,6 +107,7 @@ public class AccountUI : MonoBehaviour
     {
         AccountSystem accountSystem = FindAnyObjectByType<AccountSystem>();
         accountSystem.OnCompleteEVButtonCallBack();
-        GameManager.Instance.uiManager.startSceneUI.OnAccountButtonClick();
+        GameManager.Instance.uiManager.startSceneUI.OnAccountButtonClick(true);
+        Init();
     }
 }

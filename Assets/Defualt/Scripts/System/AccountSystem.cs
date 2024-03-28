@@ -10,30 +10,8 @@ public class AccountSystem : MonoBehaviour
     [SerializeField] private TMP_InputField idInputField;
     [SerializeField] private TMP_InputField passwordInputField;
 
-    [SerializeField] private GameObject acoountButton;
-    [SerializeField] private GameObject startButton;
-    [SerializeField] private GameObject quitButton;
-
     [SerializeField] private string email;
     [SerializeField] private string password;
-
-    private void Start()
-    {
-        if (acoountButton != null)
-        {
-            acoountButton.SetActive(true);
-        }
-
-        if (startButton != null)
-        {
-            startButton.SetActive(false);
-        }
-
-        if (quitButton != null)
-        { 
-            quitButton.SetActive(false); 
-        }
-    }
 
     /***버튼 콜벡 메서드***/
 
@@ -54,7 +32,7 @@ public class AccountSystem : MonoBehaviour
         {
             if (signUpSuccess && emailSent)
             {
-                email =idInputField.text;
+                email = idInputField.text;
                 password = passwordInputField.text;
                 Debug.Log("회원가입 성공 및 이메일 인증 링크 전송 완료");
                 InitInputField();
@@ -79,10 +57,6 @@ public class AccountSystem : MonoBehaviour
             {
                 Debug.Log("이메일 인증 성공");
                 if (GameManager.Instance.GetIsChangedToEmailAccount())
-                {
-
-                }
-                else
                 {
                     StartCoroutine(SigninCoroutine(email, password));
                 }
@@ -112,10 +86,7 @@ public class AccountSystem : MonoBehaviour
             GameManager.Instance.SetIsSignInSuccess(true); // 로그인 성공 후 처리
             yield return new WaitUntil(() => GameManager.Instance.GetIsSignInSuccess());
             InitInputField();
-            acoountButton.SetActive(false);
-            startButton.SetActive(true);
-            quitButton.SetActive(true);
-            GameManager.Instance.uiManager.startSceneUI.OnAccountButtonClick();
+            GameManager.Instance.uiManager.startSceneUI.OnAccountButtonClick(true);
         }
     }
 

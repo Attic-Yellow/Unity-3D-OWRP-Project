@@ -14,7 +14,7 @@ public class CharacterSelectedUI : MonoBehaviour
     [SerializeField] private GameObject characterButtonPrefab;
     [SerializeField] private List<GameObject> characterButton;
 
-    private int serverNumber;
+    private int serverNumber = 0;
 
     private void Awake()
     {
@@ -64,7 +64,6 @@ public class CharacterSelectedUI : MonoBehaviour
     {
         serverNumber = serverNum;
         await CharacterSelecteAreaController(serverNum);
-        serverNumber = -1;
     }
 
     // 캐릭터 버튼 클릭 메서드

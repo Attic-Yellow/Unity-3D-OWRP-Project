@@ -114,7 +114,7 @@ public class CharacterCreateUI : MonoBehaviour
         }
     }
 
-    // 메시지 컨트롤러 메서드
+    // 메시지 활설화/비활성화 컨트롤러 메서드
     public void OnCheckMessageController()
     {
         checkMessage.SetActive(!checkMessage.activeInHierarchy);
@@ -133,7 +133,7 @@ public class CharacterCreateUI : MonoBehaviour
         if (timeSinceLastClick <= doubleClickThreshold) // 더블 클릭으로 간주되는 경우
         {
             job = ((Job)jobNum).ToString(); // 선택한 직업을 문자열로 저장
-            print(job);
+            // print(job);
             currentAreaIndex++;
             CreationAreasController(currentAreaIndex);
         }
@@ -153,7 +153,7 @@ public class CharacterCreateUI : MonoBehaviour
         if (timeSinceLastClick <= doubleClickThreshold) // 더블 클릭으로 간주되는 경우
         {
             tribe = ((Tribe)tribeNum).ToString(); // 선택한 종족을 문자열로 저장
-            print(tribe);
+            // print(tribe);
             currentAreaIndex++;
             CreationAreasController(currentAreaIndex);
         }
@@ -166,9 +166,9 @@ public class CharacterCreateUI : MonoBehaviour
     // 이름 입력 완료 버튼 메서드
     public void OnNameInputFieldEndEdit()
     {
-        // ToDo : 입력한 이름을 저장
         characterName = nameInputField.text;
-        print(characterName);
+        // print(characterName);
+        OnCheckMessageController();
         currentAreaIndex++;
         CreationAreasController(currentAreaIndex);
     }
@@ -182,7 +182,7 @@ public class CharacterCreateUI : MonoBehaviour
         if (timeSinceLastClick <= doubleClickThreshold) // 더블 클릭으로 간주되는 경우
         {
             server = ((Server)serverNum).ToString(); // 선택한 서버를 문자열로 저장
-            print(server);
+            // print(server);
             CreateCharacterCallBack();
         }
     }

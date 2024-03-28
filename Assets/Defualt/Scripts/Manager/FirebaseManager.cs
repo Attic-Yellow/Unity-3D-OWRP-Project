@@ -271,6 +271,13 @@ public class FirebaseManager : MonoBehaviour
                 characters.Add(character);
             }
 
+            // 캐릭터가 없는 경우 null을 반환
+            if (characters.Count == 0)
+            {
+                onCompletion(null);
+                return;
+            }
+
             onCompletion(characters);
         }
         catch (Exception e)
