@@ -1767,9 +1767,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   accountUI: {fileID: 0}
   accountUIPage: {fileID: 1313397352}
-  acoountButton: {fileID: 748122598}
-  startButton: {fileID: 1679320890}
-  quitButton: {fileID: 1799355986}
+  testText: {fileID: 0}
 --- !u!114 &814665887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2868,7 +2866,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1296381221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3106,7 +3104,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 330585545}
-  m_PlaneDistance: 100
+  m_PlaneDistance: 10
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -3422,6 +3420,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   idInputField: {fileID: 818281127}
   passwordInputField: {fileID: 2106668889}
+  acoountButton: {fileID: 748122598}
+  startButton: {fileID: 1679320890}
+  quitButton: {fileID: 1799355986}
   email: 
   password: 
 --- !u!1 &1533280916
@@ -5126,7 +5127,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2013315039
 RectTransform:
   m_ObjectHideFlags: 0

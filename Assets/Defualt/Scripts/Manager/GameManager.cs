@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
     // 로그인 성공 시 호출되는 콜백 메서드
     public void OnLoginSuccess()
     {
-        SetIsSignInSuccess(!isSignInSuccess);
+        SetIsSignInSuccess(true);
     }
 
     // 파이어 베이스 매니저 초기화 확인 메서드

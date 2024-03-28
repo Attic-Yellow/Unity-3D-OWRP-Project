@@ -11,7 +11,7 @@ public class CharacterCreateUI : MonoBehaviour
     enum Job
     {
         Warrior,
-        Draggon,
+        Dragoon,
         Bard,
         WhiteMage,
         BlackMage
@@ -139,7 +139,7 @@ public class CharacterCreateUI : MonoBehaviour
         }
         else // 단일 클릭으로 간주되는 경우
         {
-            JobsAreaController(jobNum);
+            // JobsAreaController(jobNum);
             JobExplanationController(jobNum);
         }
     }

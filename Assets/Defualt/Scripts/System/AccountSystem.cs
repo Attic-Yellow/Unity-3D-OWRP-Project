@@ -10,8 +10,30 @@ public class AccountSystem : MonoBehaviour
     [SerializeField] private TMP_InputField idInputField;
     [SerializeField] private TMP_InputField passwordInputField;
 
+    [SerializeField] private GameObject acoountButton;
+    [SerializeField] private GameObject startButton;
+    [SerializeField] private GameObject quitButton;
+
     [SerializeField] private string email;
     [SerializeField] private string password;
+
+    private void Start()
+    {
+        if (acoountButton != null)
+        {
+            acoountButton.SetActive(true);
+        }
+
+        if (startButton != null)
+        {
+            startButton.SetActive(false);
+        }
+
+        if (quitButton != null)
+        { 
+            quitButton.SetActive(false); 
+        }
+    }
 
     /***버튼 콜벡 메서드***/
 
@@ -87,25 +109,15 @@ public class AccountSystem : MonoBehaviour
         }
         else
         {
-            GameManager.Instance.OnLoginSuccess(); // 로그인 성공 후 처리
+            GameManager.Instance.SetIsSignInSuccess(true); // 로그인 성공 후 처리
+            yield return new WaitUntil(() => GameManager.Instance.GetIsSignInSuccess());
             InitInputField();
+            acoountButton.SetActive(false);
+            startButton.SetActive(true);
+            quitButton.SetActive(true);
             GameManager.Instance.uiManager.startSceneUI.OnAccountButtonClick();
         }
-        /* 
-                <모바일에서 사용 가능 기능>
-        // 현재 사용자가 이미 로그인되어 있는지 확인
-        if (FirebaseAuth.DefaultInstance.CurrentUser != null)
-        {
-            GameManager.Instance.OnLoginSuccess(); // 이미 로그인된 사용자가 있으면 바로 로그인 성공 처리
-            InitInputField();
-        }
-        else
-        {
-            
-        }
-        */
     }
-
 
     private void InitInputField()
     {

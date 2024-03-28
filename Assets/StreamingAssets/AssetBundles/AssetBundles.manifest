@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 2697014781
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: createcharacter
+      Dependencies: {}

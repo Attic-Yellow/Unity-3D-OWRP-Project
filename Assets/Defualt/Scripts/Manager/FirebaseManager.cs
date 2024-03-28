@@ -9,18 +9,10 @@ using Firebase.Auth;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using System.IO;
 
 public class FirebaseManager : MonoBehaviour
 {
-    // 랭킹 데이터를 위한 클래스
-    [System.Serializable]
-    public class RankingEntry
-    {
-        public string userID;
-        public string nickname;
-        public int score;
-    }
-
     public FirebaseAuth auth { get; private set; }
 
     FirebaseFirestore db;
@@ -117,46 +109,74 @@ public class FirebaseManager : MonoBehaviour
             /*** 기타 스탯***/
             int totalLUK = 0; // 운 (luck)
 
-            var JobStatus = await db.Collection("createCharacterJob").Document(job).GetSnapshotAsync();
-            if (JobStatus.Exists)
+            AssetBundleCreateRequest loadAssetBundleRequest = AssetBundle.LoadFromFileAsync(Path.Combine(Application.streamingAssetsPath, "AssetBundles", "createcharacter"));
+            print(loadAssetBundleRequest);
+            AssetBundle bundle = await loadAssetBundleRequest.ToTask();
+            print(bundle);
+            if (bundle == null)
             {
-                print(totalSTR);
-                print(JobStatus.GetValue<int>("str"));
-                totalSTR += JobStatus.GetValue<int>("str");
-                totalINT += JobStatus.GetValue<int>("int");
-                totalDEX += JobStatus.GetValue<int>("dex");
-                totalSPI += JobStatus.GetValue<int>("spi");
-                totalVIT += JobStatus.GetValue<int>("vit");
-                totalCRT += JobStatus.GetValue<int>("crt");
-                totalDH += JobStatus.GetValue<int>("dh");
-                totalDET += JobStatus.GetValue<int>("det");
-                totalSKS += JobStatus.GetValue<int>("sks");
-                totalSPS += JobStatus.GetValue<int>("sps");
-                totalTEN += JobStatus.GetValue<int>("ten");
-                totalPIE += JobStatus.GetValue<int>("pie");
-                totalDEF += JobStatus.GetValue<int>("def");
-                totalMDF += JobStatus.GetValue<int>("mef");
-                totalLUK += JobStatus.GetValue<int>("luk");
+                print("에셋 번들 로드 실패");
+                return false;
             }
 
-            var TribeStatus = await db.Collection("createCharacter").Document(tribe).GetSnapshotAsync();
-            if (TribeStatus.Exists)
+            TextAsset loadedJobAsset = await bundle.LoadAssetAsync<TextAsset>(job).ToTask<TextAsset>();
+            print(loadedJobAsset);
+            if (loadedJobAsset != null)
             {
-                totalSTR += TribeStatus.GetValue<int>("str");
-                totalINT += TribeStatus.GetValue<int>("int");
-                totalDEX += TribeStatus.GetValue<int>("dex");
-                totalSPI += TribeStatus.GetValue<int>("spi");
-                totalVIT += TribeStatus.GetValue<int>("vit");
-                totalCRT += TribeStatus.GetValue<int>("crt");
-                totalDH += TribeStatus.GetValue<int>("dh");
-                totalDET += TribeStatus.GetValue<int>("det");
-                totalSKS += TribeStatus.GetValue<int>("sks");
-                totalSPS += TribeStatus.GetValue<int>("sps");
-                totalTEN += TribeStatus.GetValue<int>("ten");
-                totalPIE += TribeStatus.GetValue<int>("pie");
-                totalDEF += TribeStatus.GetValue<int>("def");
-                totalMDF += TribeStatus.GetValue<int>("mef");
-                totalLUK += TribeStatus.GetValue<int>("luk");
+                string dataAsJson = loadedJobAsset.text;
+                Dictionary<string, int> jobData = JsonConvert.DeserializeObject<Dictionary<string, int>>(dataAsJson);
+
+                totalSTR += jobData["str"];
+                totalINT += jobData["int"];
+                totalDEX += jobData["dex"];
+                totalSPI += jobData["spi"];
+                totalVIT += jobData["vit"];
+                totalCRT += jobData["crt"];
+                totalDH  += jobData["dh"];
+                totalDET += jobData["det"];
+                totalSKS += jobData["sks"];
+                totalSPS += jobData["sps"];
+                totalTEN += jobData["ten"];
+                totalPIE += jobData["pie"];
+                totalDEF += jobData["def"];
+                totalMDF += jobData["mef"];
+                totalLUK += jobData["luk"];
+
+                print(totalSTR);
+            }
+            else
+            {
+                print($"직업 데이터 로드 실패: {job}");
+                return false;
+            }
+
+            TextAsset loadedTribeAsset = await bundle.LoadAssetAsync<TextAsset>(tribe).ToTask<TextAsset>();
+            if (loadedTribeAsset != null)
+            {
+                string dataAsJson = loadedTribeAsset.text;
+                Dictionary<string, int> tribeData = JsonConvert.DeserializeObject<Dictionary<string, int>>(dataAsJson);
+
+                totalSTR += tribeData["str"];
+                totalINT += tribeData["int"];
+                totalDEX += tribeData["dex"];
+                totalSPI += tribeData["spi"];
+                totalVIT += tribeData["vit"];
+                totalCRT += tribeData["crt"];
+                totalDH  += tribeData["dh"];
+                totalDET += tribeData["det"];
+                totalSKS += tribeData["sks"];
+                totalSPS += tribeData["sps"];
+                totalTEN += tribeData["ten"];
+                totalPIE += tribeData["pie"];
+                totalDEF += tribeData["def"];
+                totalMDF += tribeData["mef"];
+                totalLUK += tribeData["luk"];
+                print(totalSTR);
+            }
+            else
+            {
+                print($"종족 데이터 로드 실패: {tribe}");
+                return false;
             }
 
             Dictionary<string, object> newCharacter = new Dictionary<string, object>
@@ -403,3 +423,73 @@ public class FirebaseManager : MonoBehaviour
         }
     }
 }
+public static class AsyncOperationExtensions
+{
+    public static Task<AssetBundle> ToTask(this AssetBundleCreateRequest request)
+    {
+        var completionSource = new TaskCompletionSource<AssetBundle>();
+        request.completed += _ => completionSource.TrySetResult(request.assetBundle);
+        return completionSource.Task;
+    }
+
+    public static Task<T> ToTask<T>(this AssetBundleRequest request) where T : UnityEngine.Object
+    {
+        var completionSource = new TaskCompletionSource<T>();
+        request.completed += _ =>
+        {
+            if (request.asset != null)
+            {
+                completionSource.TrySetResult(request.asset as T);
+            }
+            else
+            {
+                completionSource.TrySetException(new NullReferenceException("AssetBundleRequest returned null asset."));
+            }
+        };
+        return completionSource.Task;
+    }
+}
+
+/*
+            var JobStatus = await db.Collection("createCharacterJob").Document(job).GetSnapshotAsync();
+            if (JobStatus.Exists)
+            {
+                print(totalSTR);
+                print(JobStatus.GetValue<int>("str"));
+                totalSTR += JobStatus.GetValue<int>("str");
+                totalINT += JobStatus.GetValue<int>("int");
+                totalDEX += JobStatus.GetValue<int>("dex");
+                totalSPI += JobStatus.GetValue<int>("spi");
+                totalVIT += JobStatus.GetValue<int>("vit");
+                totalCRT += JobStatus.GetValue<int>("crt");
+                totalDH += JobStatus.GetValue<int>("dh");
+                totalDET += JobStatus.GetValue<int>("det");
+                totalSKS += JobStatus.GetValue<int>("sks");
+                totalSPS += JobStatus.GetValue<int>("sps");
+                totalTEN += JobStatus.GetValue<int>("ten");
+                totalPIE += JobStatus.GetValue<int>("pie");
+                totalDEF += JobStatus.GetValue<int>("def");
+                totalMDF += JobStatus.GetValue<int>("mef");
+                totalLUK += JobStatus.GetValue<int>("luk");
+            }
+
+            var TribeStatus = await db.Collection("createCharacter").Document(tribe).GetSnapshotAsync();
+            if (TribeStatus.Exists)
+            {
+                totalSTR += TribeStatus.GetValue<int>("str");
+                totalINT += TribeStatus.GetValue<int>("int");
+                totalDEX += TribeStatus.GetValue<int>("dex");
+                totalSPI += TribeStatus.GetValue<int>("spi");
+                totalVIT += TribeStatus.GetValue<int>("vit");
+                totalCRT += TribeStatus.GetValue<int>("crt");
+                totalDH += TribeStatus.GetValue<int>("dh");
+                totalDET += TribeStatus.GetValue<int>("det");
+                totalSKS += TribeStatus.GetValue<int>("sks");
+                totalSPS += TribeStatus.GetValue<int>("sps");
+                totalTEN += TribeStatus.GetValue<int>("ten");
+                totalPIE += TribeStatus.GetValue<int>("pie");
+                totalDEF += TribeStatus.GetValue<int>("def");
+                totalMDF += TribeStatus.GetValue<int>("mef");
+                totalLUK += TribeStatus.GetValue<int>("luk");
+            }
+*/
