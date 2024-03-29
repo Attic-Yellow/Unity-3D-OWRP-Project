@@ -72,6 +72,11 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public override void OnJoinedLobby()
+    {
+        print(lobbyName);
+    }
+
     public override void OnJoinedRoom()
     {
         // 방에 성공적으로 참여한 후 게임 씬으로 이동
