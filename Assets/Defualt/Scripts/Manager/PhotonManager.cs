@@ -43,7 +43,14 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            JoinRoom();
+            if (PhotonNetwork.IsMasterClient)
+            {
+                CreateAndJoinRoom();
+            }
+            else
+            {
+                JoinRoom();
+            }
         }
     }
 
@@ -51,6 +58,17 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         print("Connected to Photon as " + PhotonNetwork.AuthValues.UserId);
         JoinRoom();
+    }
+
+    private void CreateAndJoinRoom()
+    {
+        RoomOptions roomOptions = new RoomOptions
+        {
+            MaxPlayers = 20,
+            IsVisible = true,
+            IsOpen = true
+        };
+        PhotonNetwork.CreateRoom(roomName, roomOptions);
     }
 
     private void JoinRoom()
@@ -61,13 +79,36 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        print("Joined the room: " + PhotonNetwork.CurrentRoom.Name);
-        GameManager.Instance.sceneLoadManager.LoadScene("GameScene"); // 게임 씬으로 이동
+        Debug.Log(PhotonNetwork.IsMasterClient ? "마스터 클라이언트로 방에 입장했습니다." : "일반 클라이언트로 방에 입장했습니다.");
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            SetupMasterClient();
+        }
+        else
+        {
+            GameManager.Instance.sceneLoadManager.LoadScene("GameScene");
+        }
+    }
+    private void SetupMasterClient()
+    {
+        // 마스터 클라이언트 전용 작업, 예: 중요한 게임 오브젝트 생성 및 초기화
+        Debug.Log("마스터 클라이언트가 게임 세팅을 준비합니다.");
+
+        GameManager.Instance.sceneLoadManager.LoadScene("GameScene");
+        // 예시: 게임 시작을 위한 초기 오브젝트 배치 로직
+        // 이 부분에 게임 시작 시 필요한 오브젝트를 생성하고 초기화하는 코드를 추가합니다.
+        // 예: PhotonNetwork.Instantiate("SomePrefab", position, rotation);
+    }
+
+    public override void OnCreatedRoom()
+    {
+        Debug.Log($"방 생성 완료: {PhotonNetwork.CurrentRoom.Name}");
     }
 
     // 연결 실패에 대한 처리
     public override void OnDisconnected(DisconnectCause cause)
     {
-        print("Disconnected from Photon! Reason: " + cause.ToString());
+        Debug.Log($"Photon에서 연결이 끊겼습니다. 이유: {cause}");
     }
 }
