@@ -7,7 +7,7 @@ using TMPro; // TextMeshPro를 사용하기 위해 추가
 public class PhotonManager : MonoBehaviourPunCallbacks
 {
     public static PhotonManager Instance;
-
+     
     public string roomName;
     public string lobbyName = "ExampleLobby";
     private string gameVersion = "1.0"; // 게임 버전, 호환성을 위해 사용됨
