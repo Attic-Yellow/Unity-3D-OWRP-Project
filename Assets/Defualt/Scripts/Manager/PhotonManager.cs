@@ -8,6 +8,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 {
     public static PhotonManager Instance;
 
+    public string lobbyName = "ExampleLobby";
     private string gameVersion = "1.0"; // 게임 버전, 호환성을 위해 사용됨
 
     private void Awake()
@@ -44,8 +45,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         print("포톤 서버에 연결되었습니다.");
-
-        // 방 목록을 가져오거나 추가 작업을 수행
+        TypedLobby customLobby = new TypedLobby(lobbyName, LobbyType.Default); 
+        PhotonNetwork.JoinLobby(customLobby);
     }
 
     // 방 생성 또는 참여
