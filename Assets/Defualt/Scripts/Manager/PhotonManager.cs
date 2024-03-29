@@ -27,8 +27,32 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             Destroy(gameObject);
         }
 
-        GameManager.Instance.photonManager = this; 
-        PhotonNetwork.AutomaticallySyncScene = true;
+        ConnectToPhoton();
+    }
+
+    void ConnectToPhoton()
+    {
+        if (!PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.ConnectUsingSettings(); // Photon과 연결 시도
+        }
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        Debug.Log("Photon: Connected to Master Server.");
+        JoinOrCreateRoom();
+    }
+
+    void JoinOrCreateRoom()
+    {
+        RoomOptions roomOptions = new RoomOptions
+        {
+            MaxPlayers = 20,
+            IsVisible = true,
+            IsOpen = true
+        };
+        PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, TypedLobby.Default);
     }
 
     public void ConnectToPhoton(string firebaseUserId, string serverName)
@@ -43,20 +67,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            if (GameManager.Instance.GetIsManager())
-            {
-                CreateAndJoinRoom();
-            }
-            else
-            {
-                TryJoinRoom();
-            }
+            DecideActionBasedOnManagerStatus();
         }
     }
 
-    public override void OnConnectedToMaster()
+    void DecideActionBasedOnManagerStatus()
     {
-        print("Connected to Photon as " + PhotonNetwork.AuthValues.UserId);
         if (GameManager.Instance.GetIsManager())
         {
             CreateAndJoinRoom();
@@ -66,6 +82,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             TryJoinRoom();
         }
     }
+
 
     private void CreateAndJoinRoom()
     {
@@ -86,7 +103,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
         Debug.Log($"방 입장 실패: {message}. 새로운 방을 탐색합니다...");
-        // 방 입장에 실패했을 때의 대체 로직을 여기에 구현할 수 있습니다.
+        // 방 입장에 실패했을 때의 로직을 여기에 구현
         // 예: 다른 방 탐색 또는 에러 메시지 표시
     }
 
