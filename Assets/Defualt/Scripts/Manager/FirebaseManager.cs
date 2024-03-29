@@ -58,40 +58,10 @@ public class FirebaseManager : MonoBehaviour
         });
     }
 
-    // 게스트 로그인
-    public void SignInAnonymously(Action<bool> onCompletion)
-    {
-        auth.SignInAnonymouslyAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.IsFaulted || task.IsCanceled)
-            {
-                print("게스트 로그인 실패: " + task.Exception);
-                onCompletion(false);
-            }
-            else
-            {
-                FirebaseUser newUser = task.Result.User; // 게스트 로그인 성공
-                InitializeUserData(newUser.UserId, success =>
-                {
-                    if (success)
-                    {
-                        GameManager.Instance.firebaseManager.UpdateGuestStatus(newUser.UserId, true, guestUpdated => { });
-                        GameManager.Instance.firebaseManager.UpdateChangedToEmailAccount(newUser.UserId, false, guestUpdated => { });
-                    }
-                    else
-                    {
-                        print("게스트 사용자 데이터 초기화 실패");
-                    }
-                    onCompletion(true);
-                });
-            }
-        });
-    }
-
     /*** 업로드 ***/
 
     // 캐릭터 생성 및 Firestore에 업로드하는 메서드
-    public async Task<bool> CreateCharacter(string userId, string job, string tribe, string serverName, string characterName)
+    public async Task<bool> CreateCharacter(string userId, string email, string job, string tribe, string serverName, string characterName)
     {
         bool isCharacterCreated = false;
 
@@ -211,7 +181,7 @@ public class FirebaseManager : MonoBehaviour
             string uniqueCharacterID = System.Guid.NewGuid().ToString();
 
             // 데이터 업로드 경로 설정: users/{userId}/{serverName}/{characterId}
-            DocumentReference docRef = db.Collection("users").Document(userId).Collection(serverName).Document(uniqueCharacterID);
+            DocumentReference docRef = db.Collection("users").Document("email").Collection(email).Document(userId).Collection(serverName).Document(uniqueCharacterID);
 
             // Firestore에 캐릭터 데이터 업로드
             await docRef.SetAsync(newCharacter);
@@ -230,21 +200,23 @@ public class FirebaseManager : MonoBehaviour
     /*** 로드 ***/
 
     // 사용자 데이터 로드
-    public async void LoadUserData(string userId, Action<Dictionary<string, object>> onCompletion)
+    public async Task LoadUserData(string userId, string email, Action<Dictionary<string, object>> onCompletion)
     {
-        var docRef = db.Collection("users").Document(userId);
+        var docRef = db.Collection("users").Document("email").Collection(email);
+        var userSnapshot = await docRef.GetSnapshotAsync();
         try
         {
-            var snapshot = await docRef.GetSnapshotAsync();
-            if (!snapshot.Exists)
+            if (userSnapshot == null)
             {
                 print("유저 데이터 로드 실패");
                 onCompletion(null);
                 return;
             }
 
-            var userData = snapshot.ToDictionary();
-            onCompletion(userData);
+            var userData = docRef.Document(userId);
+            var userDocSnapshot = await userData.GetSnapshotAsync();
+            var user = userDocSnapshot.ToDictionary();
+            onCompletion(user);
         }
         catch (Exception ex)
         {
@@ -254,21 +226,22 @@ public class FirebaseManager : MonoBehaviour
     }
 
     // 캐릭터 로드
-    public async Task LoadCharacter(string userId, Action<List<Dictionary<string, object>>> onCompletion)
+    public async Task LoadCharacter(string userId, string server, Action<List<Dictionary<string, object>>> onCompletion)
     {
+        var user = auth.CurrentUser;
         try
         {
-            var userDocRef = db.Collection("users").Document(userId); // "users" 컬렉션에서 로그인된 사용자의 문서를 탐색
+            var userDocRef = db.Collection("users").Document("email").Collection(user.Email); // "users" 컬렉션에서 로그인된 사용자의 문서를 탐색
             var userSnapshot = await userDocRef.GetSnapshotAsync();
 
-            if (!userSnapshot.Exists)
+            if (userSnapshot == null)
             {
                 print("사용자 정보를 찾을 수 없습니다.");
                 onCompletion(null);
                 return;
             }
             
-            var serverCharactersRef = userDocRef.Collection("server1");  // 가져온 서버 이름으로 서버 컬렉션 내의 모든 캐릭터 문서를 조회
+            var serverCharactersRef = userDocRef.Document(userId).Collection(server); // 가져온 유저의 서버에서 캐릭터 문서를 탐색
             var querySnapshot = await serverCharactersRef.GetSnapshotAsync();
 
             var characters = new List<Dictionary<string, object>>();
@@ -295,29 +268,40 @@ public class FirebaseManager : MonoBehaviour
     }
 
     // 사용자 데이터 초기화
-    public void InitializeUserData(string userId, Action<bool> onCompletion)
+    public async Task InitializeUserData(string userId, string email, Action<bool> onCompletion)
     {
-        var docRef = db.Collection("users").Document(userId);
-        var user = new Dictionary<string, object>
-    {
-        { "Guest" , GameManager.Instance.GetIsUserGuest() },
-        { "emailauthentication", GameManager.Instance.GetIsEmailAuthentication() },
-        { "ChangedToEmailAccount", GameManager.Instance.GetIsChangedToEmailAccount() },
-        { "manager", false },
+        var docRef = db.Collection("users").Document("email").Collection(email);
+        var userSnapshot = await docRef.GetSnapshotAsync();
 
-    };
-        docRef.SetAsync(user).ContinueWithOnMainThread(task =>
+        if (userSnapshot != null)
         {
-            if (task.IsFaulted)
+            print("사용자 데이터 초기화 실패");
+            onCompletion(false);
+            return;
+        }
+
+        var user = new List<Dictionary<string, object>>
+        {
+            new Dictionary<string, object>
             {
-                print("사용자 데이터 초기화 실패");
-                onCompletion?.Invoke(false);
+                { "guest", GameManager.Instance.GetIsUserGuest() },
+                { "emailauthentication", GameManager.Instance.GetIsEmailAuthentication() },
+                { "manager", false }
             }
-            else
-            {
-                onCompletion?.Invoke(true);
-            }
-        });
+        };
+
+        await docRef.Document(userId).SetAsync(user[0]);
+        onCompletion(true);
+    }
+
+    //  로그아웃
+    public void SignOut()
+    {
+        if (auth.CurrentUser != null)
+        {
+            auth.SignOut();
+            Debug.Log("로그아웃 성공");
+        }
     }
 
     // 문서 필드 값 존재 여부 확인
@@ -358,85 +342,6 @@ public class FirebaseManager : MonoBehaviour
                 onResult(false); // print($"필드 '{userValue}'가 존재하지 않음);
             }
         });
-    }
-
-    // 게스트 여부 상태 업데이트
-    public void UpdateGuestStatus(string userId, bool isGuest, Action<bool> onCompletion)
-    {
-        var docRef = db.Collection("users").Document(userId);
-        Dictionary<string, object> updates = new Dictionary<string, object>
-    {
-        { "Guest", isGuest }
-    };
-        docRef.UpdateAsync(updates).ContinueWithOnMainThread(task =>
-        {
-            if (task.IsFaulted)
-            {
-                print("Guest 상태 업데이트 실패: " + task.Exception);
-                onCompletion(false);
-            }
-            else
-            {
-                print("Guest 상태 업데이트 성공");
-                onCompletion(true);
-            }
-        });
-    }
-
-    // 게스트 유저 회원 전환 상태 업데이트
-    public void UpdateChangedToEmailAccount(string userId, bool isChangedToEmailAccount, Action<bool> onCompletion)
-    {
-        var docRef = db.Collection("users").Document(userId);
-        Dictionary<string, object> updates = new Dictionary<string, object>
-    {
-        { "ChangedToEmailAccount", isChangedToEmailAccount }
-    };
-        docRef.UpdateAsync(updates).ContinueWithOnMainThread(task =>
-        {
-            if (task.IsFaulted)
-            {
-                // print("회원 전환 정보 업데이트 실패: " + task.Exception);
-                onCompletion(false);
-            }
-            else
-            {
-                // print("회원 전환 정보 업데이트 성공");
-                onCompletion(true);
-            }
-        });
-    }
-
-    // 이메일 인증 상태 업데이트
-    public void UpdateEmailAuthentication(string userId, bool isEmailAuthentication, Action<bool> onCompletion)
-    {
-        var docRef = db.Collection("users").Document(userId);
-        Dictionary<string, object> updates = new Dictionary<string, object>
-    {
-        { "emailauthentication", isEmailAuthentication }
-    };
-        docRef.UpdateAsync(updates).ContinueWithOnMainThread(task =>
-        {
-            if (task.IsFaulted)
-            {
-                print("이메일 인증 상태 업데이트 실패: " + task.Exception);
-                onCompletion(false);
-            }
-            else
-            {
-                print("이메일 인증 상태 업데이트 성공");
-                onCompletion(true);
-            }
-        });
-    }
-
-    //  로그아웃
-    public void SignOut()
-    {
-        if (auth.CurrentUser != null)
-        {
-            auth.SignOut();
-            Debug.Log("로그아웃 성공");
-        }
     }
 }
 public static class AsyncOperationExtensions

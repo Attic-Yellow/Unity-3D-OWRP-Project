@@ -105,9 +105,15 @@ public class AccountUI : MonoBehaviour
     // 인증 완료 버튼
     public void OnCompleteEVButtonClick()
     {
-        AccountSystem accountSystem = FindAnyObjectByType<AccountSystem>();
-        accountSystem.OnCompleteEVButtonCallBack();
+        StartCoroutine(EVCallBackCoroutine());
         GameManager.Instance.uiManager.startSceneUI.OnAccountButtonClick(true);
         Init();
+    }
+
+    private IEnumerator EVCallBackCoroutine()
+    {
+        AccountSystem accountSystem = FindAnyObjectByType<AccountSystem>();
+        accountSystem.OnCompleteEVButtonCallBack();
+        yield return new WaitUntil(() => GameManager.Instance.GetIsSignInSuccess());
     }
 }

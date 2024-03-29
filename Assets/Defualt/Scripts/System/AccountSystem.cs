@@ -59,10 +59,7 @@ public class AccountSystem : MonoBehaviour
             if (isVerified)
             {
                 Debug.Log("이메일 인증 성공");
-                if (GameManager.Instance.GetIsChangedToEmailAccount())
-                {
-                    StartCoroutine(SigninCoroutine(email, password));
-                }
+                StartCoroutine(SigninCoroutine(email, password));
             }
             else
             {

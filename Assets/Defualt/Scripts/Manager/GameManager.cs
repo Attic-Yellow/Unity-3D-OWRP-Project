@@ -22,7 +22,6 @@ public class GameManager : MonoBehaviour
     [Header("유저 데이터")]
     private bool isUserGuest = false;
     private bool isEmailAuthentication = false;
-    private bool isChangedToEmailAccount = false;
     private bool isManager = false;
 
     [Header("게임 데이터")]
@@ -34,7 +33,6 @@ public class GameManager : MonoBehaviour
     {
         public bool guestUser { get; set; }
         public bool emailAuthentication { get; set; }
-        public bool changedToEmailAccount { get; set; }
         public bool manager { get; set; }
     }
 
@@ -78,13 +76,13 @@ public class GameManager : MonoBehaviour
     }
 
     // 사용자 데이터 불러오기
-    public void LoadCurrentUserProfile()
+    public async void LoadCurrentUserProfile()
     {
 
         if (firebaseManager.auth.CurrentUser != null)
         {
             var user = FirebaseAuth.DefaultInstance.CurrentUser;
-            firebaseManager.LoadUserData(user.UserId, OnUserDataLoaded);
+            await firebaseManager.LoadUserData(user.UserId, user.Email, OnUserDataLoaded);
         }
         else
         {
@@ -106,7 +104,6 @@ public class GameManager : MonoBehaviour
                 {
                     isUserGuest = deserializedUserData.guestUser;
                     isEmailAuthentication = deserializedUserData.emailAuthentication;
-                    isChangedToEmailAccount = deserializedUserData.changedToEmailAccount;
                     isManager = deserializedUserData.manager;
 
                     isDataLoaded = true;
@@ -167,16 +164,6 @@ public class GameManager : MonoBehaviour
     public bool GetIsEmailAuthentication()
     {
         return isEmailAuthentication;
-    }
-
-    public void SetIsChangedToEmailAccount(bool isChangedToEmailAccount)
-    {
-        this.isChangedToEmailAccount = isChangedToEmailAccount;
-    }
-
-    public bool GetIsChangedToEmailAccount()
-    {
-        return isChangedToEmailAccount;
     }
 
     public void SetIsSignInSuccess(bool isSignInSuccess)

@@ -45,13 +45,15 @@ public class CharacterSelectedUI : MonoBehaviour
         {
             case 0:
                 characterSelectedArea[0].SetActive(true);
-                await GameManager.Instance.firebaseManager.LoadCharacter(user.UserId, OnCharacterLoaded);
+                await GameManager.Instance.firebaseManager.LoadCharacter(user.UserId, "server1", OnCharacterLoaded);
                 break;
             case 1:
                 characterSelectedArea[1].SetActive(true);
+                await GameManager.Instance.firebaseManager.LoadCharacter(user.UserId, "server2", OnCharacterLoaded);
                 break;
             case 2:
                 characterSelectedArea[2].SetActive(true);
+                await GameManager.Instance.firebaseManager.LoadCharacter(user.UserId, "server3", OnCharacterLoaded);
                 break;
 
         }

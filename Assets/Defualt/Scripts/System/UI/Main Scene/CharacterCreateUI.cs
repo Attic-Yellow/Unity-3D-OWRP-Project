@@ -207,7 +207,7 @@ public class CharacterCreateUI : MonoBehaviour
     {
         var user = FirebaseAuth.DefaultInstance.CurrentUser;
 
-        bool isCharacterCreated = await GameManager.Instance.firebaseManager.CreateCharacter(user.UserId, job, tribe, server, characterName);
+        bool isCharacterCreated = await GameManager.Instance.firebaseManager.CreateCharacter(user.UserId, user.Email, job, tribe, server, characterName);
 
         if (isCharacterCreated)
         {
