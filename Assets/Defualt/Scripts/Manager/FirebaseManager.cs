@@ -304,7 +304,9 @@ public class FirebaseManager : MonoBehaviour
     {
         { "Guest" , GameManager.Instance.GetIsUserGuest() },
         { "emailauthentication", GameManager.Instance.GetIsEmailAuthentication() },
-        { "ChangedToEmailAccount", GameManager.Instance.GetIsChangedToEmailAccount() }
+        { "ChangedToEmailAccount", GameManager.Instance.GetIsChangedToEmailAccount() },
+        { "manager", false },
+
     };
         docRef.SetAsync(user).ContinueWithOnMainThread(task =>
         {

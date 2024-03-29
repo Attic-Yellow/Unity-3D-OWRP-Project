@@ -1,3 +1,4 @@
+using Firebase.Auth;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -22,7 +23,7 @@ public class GameManager : MonoBehaviour
     private bool isUserGuest = false;
     private bool isEmailAuthentication = false;
     private bool isChangedToEmailAccount = false;
-    private string userId;
+    private bool isManager = false;
 
     [Header("게임 데이터")]
     private bool isDataLoaded;
@@ -34,7 +35,7 @@ public class GameManager : MonoBehaviour
         public bool guestUser { get; set; }
         public bool emailAuthentication { get; set; }
         public bool changedToEmailAccount { get; set; }
-        public string nickname { get; set; }
+        public bool manager { get; set; }
     }
 
     private void Awake()
@@ -58,7 +59,7 @@ public class GameManager : MonoBehaviour
     // 로그인 성공 시 호출되는 콜백 메서드
     public void OnLoginSuccess()
     {
-        SetIsSignInSuccess(true);
+        StartCoroutine(CheckAutoLoginWhenReady());
     }
 
     // 파이어 베이스 매니저 초기화 확인 메서드
@@ -68,7 +69,7 @@ public class GameManager : MonoBehaviour
 
         if (firebaseManager.auth != null) // FirebaseAuth가 준비되었는지 확인
         {
-
+            StartCoroutine(WaitForUserData());
         }
         else
         {
@@ -79,10 +80,11 @@ public class GameManager : MonoBehaviour
     // 사용자 데이터 불러오기
     public void LoadCurrentUserProfile()
     {
+
         if (firebaseManager.auth.CurrentUser != null)
         {
-            userId = firebaseManager.auth.CurrentUser.UserId;
-            firebaseManager.LoadUserData(userId, OnUserDataLoaded);
+            var user = FirebaseAuth.DefaultInstance.CurrentUser;
+            firebaseManager.LoadUserData(user.UserId, OnUserDataLoaded);
         }
         else
         {
@@ -105,6 +107,8 @@ public class GameManager : MonoBehaviour
                     isUserGuest = deserializedUserData.guestUser;
                     isEmailAuthentication = deserializedUserData.emailAuthentication;
                     isChangedToEmailAccount = deserializedUserData.changedToEmailAccount;
+                    isManager = deserializedUserData.manager;
+
                     isDataLoaded = true;
                 }
                 else
@@ -182,5 +186,10 @@ public class GameManager : MonoBehaviour
     public bool GetIsSignInSuccess()
     {
         return isSignInSuccess;
+    }
+
+    public bool GetIsManager()
+    {
+        return isManager;
     }
 }

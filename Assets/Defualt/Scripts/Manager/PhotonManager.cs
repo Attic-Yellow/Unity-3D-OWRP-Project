@@ -43,13 +43,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            if (PhotonNetwork.IsMasterClient)
+            if (GameManager.Instance.GetIsManager())
             {
                 CreateAndJoinRoom();
             }
             else
             {
-                JoinRoom();
+                TryJoinRoom();
             }
         }
     }
@@ -57,7 +57,14 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         print("Connected to Photon as " + PhotonNetwork.AuthValues.UserId);
-        JoinRoom();
+        if (GameManager.Instance.GetIsManager())
+        {
+            CreateAndJoinRoom();
+        }
+        else
+        {
+            TryJoinRoom();
+        }
     }
 
     private void CreateAndJoinRoom()
@@ -71,17 +78,23 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CreateRoom(roomName, roomOptions);
     }
 
-    private void JoinRoom()
+    private void TryJoinRoom()
     {
-        RoomOptions roomOptions = new RoomOptions { MaxPlayers = 20 }; // 방 옵션 설정
-        PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, TypedLobby.Default); // 방에 참여하거나 새로 생성
+        PhotonNetwork.JoinRoom(roomName);
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.Log($"방 입장 실패: {message}. 새로운 방을 탐색합니다...");
+        // 방 입장에 실패했을 때의 대체 로직을 여기에 구현할 수 있습니다.
+        // 예: 다른 방 탐색 또는 에러 메시지 표시
     }
 
     public override void OnJoinedRoom()
     {
-        Debug.Log(PhotonNetwork.IsMasterClient ? "마스터 클라이언트로 방에 입장했습니다." : "일반 클라이언트로 방에 입장했습니다.");
+        print(GameManager.Instance.GetIsManager() ? "마스터 클라이언트로 방에 입장했습니다." : "일반 클라이언트로 방에 입장했습니다.");
 
-        if (PhotonNetwork.IsMasterClient)
+        if (GameManager.Instance.GetIsManager())
         {
             SetupMasterClient();
         }
@@ -90,25 +103,23 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             GameManager.Instance.sceneLoadManager.LoadScene("GameScene");
         }
     }
+
     private void SetupMasterClient()
     {
         // 마스터 클라이언트 전용 작업, 예: 중요한 게임 오브젝트 생성 및 초기화
-        Debug.Log("마스터 클라이언트가 게임 세팅을 준비합니다.");
+        print("마스터 클라이언트가 게임 세팅을 준비합니다.");
 
         GameManager.Instance.sceneLoadManager.LoadScene("GameScene");
-        // 예시: 게임 시작을 위한 초기 오브젝트 배치 로직
-        // 이 부분에 게임 시작 시 필요한 오브젝트를 생성하고 초기화하는 코드를 추가합니다.
-        // 예: PhotonNetwork.Instantiate("SomePrefab", position, rotation);
     }
 
     public override void OnCreatedRoom()
     {
-        Debug.Log($"방 생성 완료: {PhotonNetwork.CurrentRoom.Name}");
+        print($"방 생성 완료: {PhotonNetwork.CurrentRoom.Name}");
     }
 
     // 연결 실패에 대한 처리
     public override void OnDisconnected(DisconnectCause cause)
     {
-        Debug.Log($"Photon에서 연결이 끊겼습니다. 이유: {cause}");
+        print($"Photon에서 연결이 끊겼습니다. 이유: {cause}");
     }
 }
