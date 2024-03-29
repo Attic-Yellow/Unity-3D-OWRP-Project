@@ -60,6 +60,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
+        print(GameManager.Instance.GetIsManager());
         print(lobbyName); 
         if (GameManager.Instance.GetIsManager())
         {
