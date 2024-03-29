@@ -95,7 +95,6 @@ public class FirebaseManager : MonoBehaviour
     {
         bool isCharacterCreated = false;
 
-        print($"{job}, {tribe}, {serverName}, {characterName}");
         try
         {
             /*** ±‚∫ª Ω∫≈» ***/
@@ -150,8 +149,6 @@ public class FirebaseManager : MonoBehaviour
                 totalDEF += jobData["def"];
                 totalMDF += jobData["mef"];
                 totalLUK += jobData["luk"];
-
-                print(totalSTR);
             }
             else
             {
@@ -180,7 +177,6 @@ public class FirebaseManager : MonoBehaviour
                 totalDEF += tribeData["def"];
                 totalMDF += tribeData["mef"];
                 totalLUK += tribeData["luk"];
-                print(totalSTR);
             }
             else
             {
@@ -193,6 +189,8 @@ public class FirebaseManager : MonoBehaviour
                 { "name", characterName },
                 { "job", job },
                 { "tribe", tribe },
+                { "level", 1 },
+                { "server", serverName }, 
                 { "str", totalSTR},
                 { "int", totalINT},
                 { "dex", totalDEX},

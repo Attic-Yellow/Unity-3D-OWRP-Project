@@ -12,6 +12,7 @@ public class test : MonoBehaviour
             foreach (var player in PhotonNetwork.PlayerList)
             {
                 Debug.Log($"Player ID: {player.UserId}, Name: {player.NickName}");
+                print(PhotonNetwork.CurrentRoom.Name);
             }
         }
         else
