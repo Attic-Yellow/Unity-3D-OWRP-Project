@@ -85,6 +85,11 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         GameManager.Instance.sceneLoadManager.LoadScene("GameScene");
     }
 
+    public override void OnCreatedRoom()
+    {
+        GameManager.Instance.sceneLoadManager.LoadScene("GameScene");
+    }
+
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         Debug.Log("방 생성 실패: " + message);
