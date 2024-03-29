@@ -45,23 +45,23 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         print("포톤 서버에 연결되었습니다.");
-        TypedLobby customLobby = new TypedLobby(lobbyName, LobbyType.Default); 
-        PhotonNetwork.JoinLobby(customLobby);
     }
 
     // 방 생성 또는 참여
     public void CreateOrJoinRoom(string roomName, string nickname)
     {
+        TypedLobby customLobby = new TypedLobby(lobbyName, LobbyType.Default);
+        PhotonNetwork.JoinLobby(customLobby);
         PhotonNetwork.NickName = nickname;
 
+        RoomOptions roomOptions = new RoomOptions();
+        roomOptions.IsVisible = true;
+        roomOptions.IsOpen = true;
+        roomOptions.MaxPlayers = 20; // 최대 플레이어 수 설정
         if (GameManager.Instance.GetIsManager())
         {
             print(roomName);
             // 관리자인 경우 방 생성
-            RoomOptions roomOptions = new RoomOptions();
-            roomOptions.IsVisible = true;
-            roomOptions.IsOpen = true;
-            roomOptions.MaxPlayers = 20; // 최대 플레이어 수 설정
             PhotonNetwork.CreateRoom(roomName, roomOptions);
         }
         else
