@@ -5,32 +5,33 @@ using TMPro;
 using Firebase.Auth;
 using Unity.VisualScripting;
 using System.Threading.Tasks;
+enum Job
+{
+    Warrior,
+    Dragoon,
+    Bard,
+    WhiteMage,
+    BlackMage
+}
+
+enum Tribe
+{
+    Human,
+    Elf,
+    Dwarf,
+    Orc
+}
+
+enum Server
+{
+    server1,
+    server2,
+    server3
+}
 
 public class CharacterCreateUI : MonoBehaviour
 {
-    enum Job
-    {
-        Warrior,
-        Dragoon,
-        Bard,
-        WhiteMage,
-        BlackMage
-    }
 
-    enum Tribe
-    {
-        Human,
-        Elf,
-        Dwarf,
-        Orc
-    }
-
-    enum Server
-    {
-        server1,
-        server2,
-        server3
-    }
 
     [SerializeField] private List<GameObject> characterCreationAreas;
     [SerializeField] private List<GameObject> jobExplanations;
@@ -183,7 +184,7 @@ public class CharacterCreateUI : MonoBehaviour
         {
             server = ((Server)serverNum).ToString(); // 선택한 서버를 문자열로 저장
             // print(server);
-            CreateCharacterCallBack();
+            CreateCharacterCallBack(serverNum);
         }
     }
 
@@ -202,7 +203,7 @@ public class CharacterCreateUI : MonoBehaviour
     }
 
     // 캐릭터 생성 메서드
-    private async void CreateCharacterCallBack()
+    private async void CreateCharacterCallBack(int serverNum)
     {
         var user = FirebaseAuth.DefaultInstance.CurrentUser;
 
@@ -212,6 +213,7 @@ public class CharacterCreateUI : MonoBehaviour
         {
             print("캐릭터 생성에 성공하였습니다");
             GameManager.Instance.uiManager.mainSceneUI.MainSceneInit();
+            await GameManager.Instance.uiManager.mainSceneUI.characterSelectedUI.CharacterSelecteAreaController(serverNum);
         }
         else
         {

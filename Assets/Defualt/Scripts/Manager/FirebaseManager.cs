@@ -13,6 +13,8 @@ using System.IO;
 
 public class FirebaseManager : MonoBehaviour
 {
+    private static FirebaseManager Instance;
+
     public FirebaseAuth auth { get; private set; }
 
     FirebaseFirestore db;
@@ -20,6 +22,16 @@ public class FirebaseManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         GameManager.Instance.firebaseManager = this;
 
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
@@ -110,9 +122,7 @@ public class FirebaseManager : MonoBehaviour
             int totalLUK = 0; // 운 (luck)
 
             AssetBundleCreateRequest loadAssetBundleRequest = AssetBundle.LoadFromFileAsync(Path.Combine(Application.streamingAssetsPath, "AssetBundles", "createcharacter"));
-            print(loadAssetBundleRequest);
             AssetBundle bundle = await loadAssetBundleRequest.ToTask();
-            print(bundle);
             if (bundle == null)
             {
                 print("에셋 번들 로드 실패");
@@ -120,7 +130,6 @@ public class FirebaseManager : MonoBehaviour
             }
 
             TextAsset loadedJobAsset = await bundle.LoadAssetAsync<TextAsset>(job).ToTask<TextAsset>();
-            print(loadedJobAsset);
             if (loadedJobAsset != null)
             {
                 string dataAsJson = loadedJobAsset.text;
@@ -461,42 +470,12 @@ public static class AsyncOperationExtensions
             var JobStatus = await db.Collection("createCharacterJob").Document(job).GetSnapshotAsync();
             if (JobStatus.Exists)
             {
-                print(totalSTR);
                 print(JobStatus.GetValue<int>("str"));
-                totalSTR += JobStatus.GetValue<int>("str");
-                totalINT += JobStatus.GetValue<int>("int");
-                totalDEX += JobStatus.GetValue<int>("dex");
-                totalSPI += JobStatus.GetValue<int>("spi");
-                totalVIT += JobStatus.GetValue<int>("vit");
-                totalCRT += JobStatus.GetValue<int>("crt");
-                totalDH += JobStatus.GetValue<int>("dh");
-                totalDET += JobStatus.GetValue<int>("det");
-                totalSKS += JobStatus.GetValue<int>("sks");
-                totalSPS += JobStatus.GetValue<int>("sps");
-                totalTEN += JobStatus.GetValue<int>("ten");
-                totalPIE += JobStatus.GetValue<int>("pie");
-                totalDEF += JobStatus.GetValue<int>("def");
-                totalMDF += JobStatus.GetValue<int>("mef");
-                totalLUK += JobStatus.GetValue<int>("luk");
             }
 
             var TribeStatus = await db.Collection("createCharacter").Document(tribe).GetSnapshotAsync();
             if (TribeStatus.Exists)
             {
                 totalSTR += TribeStatus.GetValue<int>("str");
-                totalINT += TribeStatus.GetValue<int>("int");
-                totalDEX += TribeStatus.GetValue<int>("dex");
-                totalSPI += TribeStatus.GetValue<int>("spi");
-                totalVIT += TribeStatus.GetValue<int>("vit");
-                totalCRT += TribeStatus.GetValue<int>("crt");
-                totalDH += TribeStatus.GetValue<int>("dh");
-                totalDET += TribeStatus.GetValue<int>("det");
-                totalSKS += TribeStatus.GetValue<int>("sks");
-                totalSPS += TribeStatus.GetValue<int>("sps");
-                totalTEN += TribeStatus.GetValue<int>("ten");
-                totalPIE += TribeStatus.GetValue<int>("pie");
-                totalDEF += TribeStatus.GetValue<int>("def");
-                totalMDF += TribeStatus.GetValue<int>("mef");
-                totalLUK += TribeStatus.GetValue<int>("luk");
             }
 */

@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     [Header("¸Å´ÏÀú")]
     public FirebaseManager firebaseManager;
     public AuthManager authManager;
+    public PhotonManager photonManager;
+    public DataManager dataManager;
     public UIManager uiManager;
     public SceneLoadManager sceneLoadManager;
 
@@ -33,8 +35,6 @@ public class GameManager : MonoBehaviour
         public bool emailAuthentication { get; set; }
         public bool changedToEmailAccount { get; set; }
         public string nickname { get; set; }
-        public int score { get; set; }
-        public int coins { get; set; }
     }
 
     private void Awake()

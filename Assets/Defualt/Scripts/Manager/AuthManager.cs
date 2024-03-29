@@ -8,10 +8,22 @@ using Unity.VisualScripting;
 
 public class AuthManager : MonoBehaviour
 {
+    private static AuthManager instance;
+
     private bool isCompleteLink = false;
 
     private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         GameManager.Instance.authManager = this;
     }
 

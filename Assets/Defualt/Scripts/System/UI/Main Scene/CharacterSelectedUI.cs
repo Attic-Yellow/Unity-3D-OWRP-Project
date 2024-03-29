@@ -18,7 +18,7 @@ public class CharacterSelectedUI : MonoBehaviour
 
     private void Awake()
     {
-        GameManager.Instance.uiManager.mainSceneUI.chracterSelectedUI = this;
+        GameManager.Instance.uiManager.mainSceneUI.characterSelectedUI = this;
     }
 
     private async void Start()
@@ -29,7 +29,7 @@ public class CharacterSelectedUI : MonoBehaviour
     /*** Page 및 Area의 Active 컨트롤러 메서드 ***/
 
     // 캐릭터 선택 영역 컨트롤러 메서드
-    private async Task CharacterSelecteAreaController(int serverNum)
+    public async Task CharacterSelecteAreaController(int serverNum)
     {
         var user = FirebaseAuth.DefaultInstance.CurrentUser;
 
@@ -96,18 +96,13 @@ public class CharacterSelectedUI : MonoBehaviour
         // 새로운 캐릭터 정보 프리팹 인스턴스를 생성하고 characterSelectedArea에 추가
         foreach (var characterData in charactersData)
         {
-            if (characterData.TryGetValue("name", out var characterName))
-            {
-                // 프리팹 인스턴스화
-                var instance = Instantiate(characterButtonPrefab, characterSelectedArea[serverNumber].transform);
+            var instance = Instantiate(characterButtonPrefab, characterSelectedArea[serverNumber].transform); // 프리팹 인스턴스화
 
-                // 인스턴스화된 프리팹에 캐릭터 정보 설정
-                // 예: 프리팹 내의 Text 컴포넌트 찾아서 캐릭터 이름 설정
-                var textComponent = instance.GetComponentInChildren<TextMeshProUGUI>();
-                if (textComponent != null)
-                {
-                    textComponent.text = characterName.ToString();
-                }
+            var characterButtonScript = instance.GetComponent<CharacterButton>(); // CharacterButton 스크립트 참조
+
+            if (characterButtonScript != null)
+            {
+                characterButtonScript.SetCharacterData(characterData); // 캐릭터 데이터 설정
             }
         }
     }

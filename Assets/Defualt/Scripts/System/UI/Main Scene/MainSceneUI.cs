@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MainSceneUI : MonoBehaviour
 {
-    public CharacterSelectedUI chracterSelectedUI;
+    public CharacterSelectedUI characterSelectedUI;
     public CharacterCreateUI characterCreateUI;
     [SerializeField] private GameObject selectedPage;
     [SerializeField] private GameObject createPage;

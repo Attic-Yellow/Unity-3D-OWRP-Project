@@ -36,14 +36,17 @@ public class AccountSystem : MonoBehaviour
                 password = passwordInputField.text;
                 Debug.Log("회원가입 성공 및 이메일 인증 링크 전송 완료");
                 InitInputField();
+                return;
             }
             else if (signUpSuccess)
             {
                 print("회원가입은 성공했지만 이메일 인증 링크 전송에 실패했습니다.");
+                return;
             }
             else
             {
                 print("회원가입 실패");
+                return;
             }
         });
     }
