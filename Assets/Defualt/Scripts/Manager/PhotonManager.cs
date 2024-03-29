@@ -8,6 +8,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 {
     public static PhotonManager Instance;
 
+    public string roomName;
     public string lobbyName = "ExampleLobby";
     private string gameVersion = "1.0"; // 게임 버전, 호환성을 위해 사용됨
 
@@ -53,13 +54,19 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         TypedLobby customLobby = new TypedLobby(lobbyName, LobbyType.Default);
         PhotonNetwork.JoinLobby(customLobby);
         PhotonNetwork.NickName = nickname;
+        this.roomName = roomName;
+        
+    }
 
-        RoomOptions roomOptions = new RoomOptions();
-        roomOptions.IsVisible = true;
-        roomOptions.IsOpen = true;
-        roomOptions.MaxPlayers = 20; // 최대 플레이어 수 설정
+    public override void OnJoinedLobby()
+    {
+        print(lobbyName); 
         if (GameManager.Instance.GetIsManager())
         {
+            RoomOptions roomOptions = new RoomOptions();
+            roomOptions.IsVisible = true;
+            roomOptions.IsOpen = true;
+            roomOptions.MaxPlayers = 20; // 최대 플레이어 수 설정
             print(roomName);
             // 관리자인 경우 방 생성
             PhotonNetwork.CreateRoom(roomName, roomOptions);
@@ -70,11 +77,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             // 일반 사용자인 경우 방 참여
             PhotonNetwork.JoinRoom(roomName);
         }
-    }
-
-    public override void OnJoinedLobby()
-    {
-        print(lobbyName);
     }
 
     public override void OnJoinedRoom()
