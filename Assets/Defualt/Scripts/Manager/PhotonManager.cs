@@ -26,33 +26,43 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         {
             Destroy(gameObject);
         }
-
-        ConnectToPhoton();
     }
 
-    void ConnectToPhoton()
+    // 로그인 성공 후 호출될 메서드로 변경
+    public void LoginAndConnectToPhoton(string firebaseUserId, string serverName)
     {
+        this.userFirebaseUserId = firebaseUserId; // Firebase 사용자 ID 저장
+        roomName = serverName; // 서버 이름 설정
+
         if (!PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.ConnectUsingSettings(); // Photon과 연결 시도
+            PhotonNetwork.AuthValues = new AuthenticationValues(firebaseUserId); // Firebase 인증 정보 설정
+            PhotonNetwork.ConnectUsingSettings(); // Photon에 연결 시도
         }
     }
 
     public override void OnConnectedToMaster()
     {
         Debug.Log("Photon: Connected to Master Server.");
-        JoinOrCreateRoom();
+        DecideActionBasedOnManagerStatus();
     }
 
-    void JoinOrCreateRoom()
+    void DecideActionBasedOnManagerStatus()
     {
-        RoomOptions roomOptions = new RoomOptions
+        if (GameManager.Instance.GetIsManager())
         {
-            MaxPlayers = 20,
-            IsVisible = true,
-            IsOpen = true
-        };
-        PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, TypedLobby.Default);
+            CreateAndJoinRoom(); // 매니저는 방을 생성
+        }
+        else
+        {
+            TryJoinRoom(); // 일반 사용자는 기존 방에 입장 시도
+        }
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.Log($"방 입장 실패: {message}. 일반 사용자는 방이 없으면 입장할 수 없습니다.");
+        // 추가적으로 사용자에게 방이 없어 입장할 수 없다는 메시지를 보여주는 등의 로직을 구현할 수 있습니다.
     }
 
     public void ConnectToPhoton(string firebaseUserId, string serverName)
@@ -71,19 +81,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
-    void DecideActionBasedOnManagerStatus()
-    {
-        if (GameManager.Instance.GetIsManager())
-        {
-            CreateAndJoinRoom();
-        }
-        else
-        {
-            TryJoinRoom();
-        }
-    }
-
-
     private void CreateAndJoinRoom()
     {
         RoomOptions roomOptions = new RoomOptions
@@ -98,13 +95,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     private void TryJoinRoom()
     {
         PhotonNetwork.JoinRoom(roomName);
-    }
-
-    public override void OnJoinRoomFailed(short returnCode, string message)
-    {
-        Debug.Log($"방 입장 실패: {message}. 새로운 방을 탐색합니다...");
-        // 방 입장에 실패했을 때의 로직을 여기에 구현
-        // 예: 다른 방 탐색 또는 에러 메시지 표시
     }
 
     public override void OnJoinedRoom()
