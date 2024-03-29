@@ -36,12 +36,7 @@ public class CharacterButton : MonoBehaviour
             {
                 GameManager.Instance.dataManager.characterData.SetCharacterData(CharacterData);
                 string serverName = CharacterData.ContainsKey("server") ? CharacterData["server"].ToString() : "server1";
-                var user = FirebaseAuth.DefaultInstance.CurrentUser;
-
-                if (user != null)
-                {
-                    GameManager.Instance.photonManager.ConnectToPhoton(user.UserId, serverName);
-                }
+                GameManager.Instance.photonManager.CreateOrJoinRoom(serverName);
             }
                 
         }
