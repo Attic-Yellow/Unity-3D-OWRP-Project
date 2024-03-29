@@ -29,7 +29,6 @@ public class CharacterButton : MonoBehaviour
         float timeSinceLastClick = Time.time - lastClickTime;
         lastClickTime = Time.time;
 
-        // 직업 설명 변경 또는 직업 선택 처리
         if (timeSinceLastClick <= doubleClickThreshold) // 더블 클릭으로 간주되는 경우
         {
             if (CharacterData != null) 
