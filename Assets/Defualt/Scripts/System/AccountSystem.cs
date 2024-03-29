@@ -89,7 +89,6 @@ public class AccountSystem : MonoBehaviour
             var user = FirebaseAuth.DefaultInstance.CurrentUser;
             print(user.UserId);
             GameManager.Instance.OnLoginSuccess();
-            GameManager.Instance.SetIsSignInSuccess(true); // 로그인 성공 후 처리
             yield return new WaitUntil(() => GameManager.Instance.GetIsSignInSuccess());
             InitInputField();
             GameManager.Instance.uiManager.startSceneUI.OnAccountButtonClick(true);

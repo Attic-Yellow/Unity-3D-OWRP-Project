@@ -2,6 +2,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using UnityEngine;
+using TMPro; // TextMeshPro를 사용하기 위해 추가
 
 public class PhotonManager : MonoBehaviourPunCallbacks
 {
@@ -48,39 +49,38 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     }
 
     // 방 생성 또는 참여
-    public void CreateOrJoinRoom(string roomName)
+    public void CreateOrJoinRoom(string roomName, string nickname)
     {
         if (GameManager.Instance.GetIsManager())
         {
             // 관리자인 경우 방 생성
+            PhotonNetwork.NickName = nickname;
             RoomOptions roomOptions = new RoomOptions();
             roomOptions.MaxPlayers = 20; // 최대 플레이어 수 설정
             PhotonNetwork.CreateRoom(roomName, roomOptions);
+            GameManager.Instance.sceneLoadManager.LoadScene("GameScene");
         }
         else
         {
             // 일반 사용자인 경우 방 참여
-            PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions { MaxPlayers = 20 }, TypedLobby.Default);
+            PhotonNetwork.NickName = nickname;
+            PhotonNetwork.JoinRoom(roomName);
+            GameManager.Instance.sceneLoadManager.LoadScene("GameScene");
         }
     }
 
-    // 방 생성에 성공했을 때 호출됨
-    public override void OnCreatedRoom()
+    public void PrintCurrentRoomPlayers()
     {
-        print("방을 생성했습니다.");
-        GameManager.Instance.sceneLoadManager.LoadScene("GameScene");
-    }
-
-    // 방에 성공적으로 참여했을 때 호출됨
-    public override void OnJoinedRoom()
-    {
-        print("방에 참여했습니다.");
-        GameManager.Instance.sceneLoadManager.LoadScene("GameScene");
-    }
-
-    // 방 참여에 실패했을 때 호출됨
-    public override void OnJoinRoomFailed(short returnCode, string message)
-    {
-        print("방 참여에 실패했습니다: " + message);
+        if (PhotonNetwork.InRoom)
+        {
+            foreach (var player in PhotonNetwork.PlayerList)
+            {
+                Debug.Log($"Player ID: {player.UserId}, Name: {player.NickName}");
+            }
+        }
+        else
+        {
+            Debug.Log("현재 방에 속해있지 않습니다.");
+        }
     }
 }

@@ -36,7 +36,8 @@ public class CharacterButton : MonoBehaviour
             {
                 GameManager.Instance.dataManager.characterData.SetCharacterData(CharacterData);
                 string serverName = CharacterData.ContainsKey("server") ? CharacterData["server"].ToString() : "server1";
-                GameManager.Instance.photonManager.CreateOrJoinRoom(serverName);
+                string nickName = CharacterData.ContainsKey("name") ? CharacterData["name"].ToString() : string.Empty;
+                GameManager.Instance.photonManager.CreateOrJoinRoom(serverName, nickName);
             }
                 
         }

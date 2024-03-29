@@ -110,6 +110,7 @@ public class GameManager : MonoBehaviour
                     isManager = deserializedUserData.manager;
 
                     isDataLoaded = true;
+                    isSignInSuccess = true;
                 }
                 else
                 {
