@@ -55,13 +55,17 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
         if (GameManager.Instance.GetIsManager())
         {
+            print(roomName);
             // 관리자인 경우 방 생성
             RoomOptions roomOptions = new RoomOptions();
+            roomOptions.IsVisible = true;
+            roomOptions.IsOpen = true;
             roomOptions.MaxPlayers = 20; // 최대 플레이어 수 설정
             PhotonNetwork.CreateRoom(roomName, roomOptions);
         }
         else
         {
+            print(roomName);
             // 일반 사용자인 경우 방 참여
             PhotonNetwork.JoinRoom(roomName);
         }
