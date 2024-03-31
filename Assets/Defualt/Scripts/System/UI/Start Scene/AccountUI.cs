@@ -106,7 +106,6 @@ public class AccountUI : MonoBehaviour
     public void OnCompleteEVButtonClick()
     {
         StartCoroutine(EVCallBackCoroutine());
-        GameManager.Instance.uiManager.startSceneUI.OnAccountButtonClick(true);
         Init();
     }
 

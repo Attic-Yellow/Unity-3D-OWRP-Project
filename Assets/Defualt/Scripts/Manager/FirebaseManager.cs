@@ -273,7 +273,7 @@ public class FirebaseManager : MonoBehaviour
         var docRef = db.Collection("users").Document("email").Collection(email);
         var userSnapshot = await docRef.GetSnapshotAsync();
 
-        if (userSnapshot != null)
+        if (userSnapshot == null)
         {
             print("사용자 데이터 초기화 실패");
             onCompletion(false);

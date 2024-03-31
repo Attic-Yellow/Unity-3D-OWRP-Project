@@ -94,13 +94,13 @@ public class AuthManager : MonoBehaviour
     }
 
     // 인증 여부 확인
-    public void CheckEmailVerification(Action<bool> onCompletion)
+    public async void CheckEmailVerification(Action<bool> onCompletion)
     {
         print($"{FirebaseAuth.DefaultInstance.CurrentUser}");
         var user = FirebaseAuth.DefaultInstance.CurrentUser;
         if (user != null)
         {
-            user.ReloadAsync().ContinueWithOnMainThread(reloadTask =>
+            await user.ReloadAsync().ContinueWithOnMainThread(async reloadTask =>
             {
                 if (reloadTask.IsCanceled || reloadTask.IsFaulted)
                 {
@@ -116,6 +116,19 @@ public class AuthManager : MonoBehaviour
 
                         // 이메일 인증 상태 업데이트
                         GameManager.Instance.SetIsEmailAuthentication(true);
+
+                        await GameManager.Instance.firebaseManager.InitializeUserData(user.UserId, user.Email, success =>
+                        {
+                            if (success)
+                            {
+                                onCompletion(true);
+                            }
+                            else
+                            {
+                                onCompletion(false);
+                            }
+                            
+                        });
                     }
                     else
                     {
