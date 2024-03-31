@@ -7,7 +7,7 @@ using TMPro;
 public class CharacterInfoUI : MonoBehaviour
 {
     private string[] characterInfo = { "name", "level", "job" };
-    private string[] abilityNames = { "str", "int", "dex", "spi", "vit", "luk", "crt", "dh", "det", "def", "mef", "sks", "sps", "ten", "pie" };
+    private string[] abilityNames = { "maxHp", "str", "int", "dex", "spi", "vit", "luk", "crt", "dh", "det", "def", "mdf", "pap", "map", "sks", "mhp", "sps", "ten", "pie" };
 
     [SerializeField] private GameObject characterInfoUI;
 
