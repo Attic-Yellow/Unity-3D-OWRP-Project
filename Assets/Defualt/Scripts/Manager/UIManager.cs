@@ -6,6 +6,7 @@ public class UIManager : MonoBehaviour
 {
     public StartSceneUI startSceneUI;
     public MainSceneUI mainSceneUI;
+    public GameSceneUI gameSceneUI;
 
     private void Awake()
     {
