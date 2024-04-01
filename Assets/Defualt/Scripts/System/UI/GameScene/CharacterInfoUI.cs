@@ -46,14 +46,6 @@ public class CharacterInfoUI : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            CharacterInfoUIController();
-        }
-    }
-
     public void CharacterInfoUIController()
     {
         if (characterInfoUI != null)

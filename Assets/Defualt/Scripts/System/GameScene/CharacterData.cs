@@ -166,8 +166,7 @@ public class CharacterData : MonoBehaviour
     // 체력 자연 회복 계산 메서드
     private int CalculateHpRecovery(int vit, int det)
     {
-        // 간단한 예제: vit과 det의 합에 기반한 회복량 계산
-        // 실제 게임에서는 이 공식을 조정할 수 있습니다.
+        // vit과 det의 합에 기반한 회복량 계산
         int recoveryAmount = vit + (int)(det * 0.5); // det에 가중치 0.5를 적용
 
         return recoveryAmount;
