@@ -6,11 +6,23 @@ using UnityEngine;
 
 public class CharacterData : MonoBehaviour
 {
+    public static CharacterData Instance;
+
     public Dictionary<string, object> characterData { get; private set; } // 캐릭터 데이터 저장
 
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         GameManager.Instance.dataManager.characterData = this; // 데이터 매니저에 캐릭터 데이터 설정
     }
 

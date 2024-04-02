@@ -1,0 +1,74 @@
+{
+    "name": "PlayerKey",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "1fb13619-d3c8-4e5d-874c-f70399727e96",
+            "actions": [
+                {
+                    "name": "Character",
+                    "type": "Button",
+                    "id": "8e2478cb-aaab-430c-af7b-f6e284087f9f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Inventory",
+                    "type": "Button",
+                    "id": "8624a6b8-0e0f-4c16-ab70-0f09b0a23c08",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Equipped",
+                    "type": "Button",
+                    "id": "a2e9ff58-eee7-43b1-9da2-864abd1694cb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "99abfefe-ac7f-40e2-b67d-99460f0a7316",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Character",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "94528e40-c643-4e93-b316-5b689fcb1352",
+                    "path": "<Keyboard>/i",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Inventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "61b95fc4-ca52-4c39-8bef-5a795ad218df",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Equipped",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
