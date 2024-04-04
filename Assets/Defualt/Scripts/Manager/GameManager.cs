@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
     [Header("게임 데이터")]
     private bool isDataLoaded;
     private bool isSignInSuccess;
+    private bool isRebinding;
 
     [Serializable]
     private class UserData
@@ -179,5 +180,15 @@ public class GameManager : MonoBehaviour
     public bool GetIsManager()
     {
         return isManager;
+    }
+
+    public void SetIsRebinding(bool isRebind)
+    {
+        isRebinding = isRebind;
+    }
+
+    public bool GetIsRebinding()
+    {
+        return isRebinding;
     }
 }

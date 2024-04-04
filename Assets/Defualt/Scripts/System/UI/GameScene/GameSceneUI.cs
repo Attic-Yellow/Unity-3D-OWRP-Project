@@ -9,6 +9,7 @@ public class GameSceneUI : MonoBehaviour
     public CharacterGearUI characterGearUI;
     public InventoryUI inventoryUI;
     public MenuButtonUI menuButtonsUI;
+    public KeyBindingUI keyBindingUI;
 
     private void Awake()
     {
