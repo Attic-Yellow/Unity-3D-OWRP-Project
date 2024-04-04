@@ -37,32 +37,43 @@ public class Keybinding : MonoBehaviour
     {
         action.Disable();
 
-        action.ApplyBindingOverride(bindingsIndex, "<Keyboard>/space");
-        //if (bindingsIndex != 0)
-        //{
-        //    // 기존 바인딩이 아닌 새 바인딩을 추가하는 경우
-        //    action.AddBinding("<Keyboard>/#(any)");
-        //}
+        // 이미 존재하는 바인딩 인덱스인지 확인하고, 맞다면 해당 바인딩 업데이트
+        if (action.bindings.Count > 1 + bindingsIndex)
+        {
+            action.RemoveBindingOverride(bindingsIndex); // 기존 바인딩 제거
+        }
 
-        //// 재바인딩 수행
-        //var rebindOperation = action.PerformInteractiveRebinding(bindingsIndex)
-        //    .WithControlsExcluding("Mouse") // 마우스 제외
-        //    .OnMatchWaitForAnother(0.1f) // 실수로 두 번 입력하는 것 방지
-        //    .OnComplete(operation => OnRebindComplete(operation, action)) // 재바인딩 완료 후 처리
-        //    .Start();
-
-        //// 새 바인딩 추가의 경우, 바인딩 인덱스 업데이트 필요
-        //if (bindingsIndex != 0)
-        //{
-        //    bindingsIndex = action.bindings.Count - 1;
-        //}
+        var rebindOperation = action.PerformInteractiveRebinding(bindingsIndex)
+            .WithControlsExcluding("Mouse") // 마우스 입력은 제외 (예시)
+            .OnMatchWaitForAnother(0.2f)
+            .OnComplete(operation => OnRebindComplete(operation, action)) // 재바인딩 완료 콜백
+            .Start(); // 재바인딩 시작
     }
 
     private void OnRebindComplete(InputActionRebindingExtensions.RebindingOperation operation, InputAction action)
     {
-        // 재바인딩이 완료되면, 액션을 다시 활성화
-        action.Enable();
-        bindingButtonText.text = action.bindings[bindingsIndex].ToDisplayString();
-        GameManager.Instance.SetIsRebinding(false);
+        operation.Dispose(); // 재바인딩 작업 리소스 해제
+
+        action.Enable(); // 재바인딩이 완료되면, 액션을 다시 활성화
+        bindingButtonText.text = action.bindings[bindingsIndex].ToDisplayString(); // 버튼 텍스트 업데이트
+        GameManager.Instance.SetIsRebinding(false); // 게임 매니저 상태 업데이트
+    }
+
+    public void UpdateBindingButtonText()
+    {
+        if (string.IsNullOrEmpty(bindNaem))
+        {
+            return; // bindNaem이 비어 있으면 여기서 함수 실행을 중단
+        }
+
+        InputAction action = actionAsset.FindAction(bindNaem, throwIfNotFound: false);
+        if (action != null)
+        {
+            bindingButtonText.text = action.bindings[bindingsIndex].ToDisplayString();
+        }
+        else
+        {
+            bindingButtonText.text = "";
+        }
     }
 }

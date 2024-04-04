@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,37 +10,79 @@ public class BindingSave : MonoBehaviour
 
     private void Awake()
     {
-        LoadBindings();
+        LoadBindingsAndUpdateUI();
     }
 
     public void SaveBindings()
     {
-        foreach (var map in actionAsset.actionMaps)
+        var bindingsDictionary = new Dictionary<string, List<string>>();
+
+        foreach (var actionMap in actionAsset.actionMaps)
         {
-            foreach (var binding in map.bindings)
+            foreach (var action in actionMap)
             {
-                if (!string.IsNullOrEmpty(binding.id.ToString()))
+                var bindingList = new List<string>();
+
+                for (int i = 0; i < action.bindings.Count && i < 2; i++) // 각 액션별 최대 2개의 바인딩 저장
                 {
-                    PlayerPrefs.SetString(binding.id.ToString(), binding.overridePath);
+                    if (!string.IsNullOrEmpty(action.bindings[i].overridePath))
+                    {
+                        bindingList.Add(action.bindings[i].overridePath);
+                    }
+                }
+
+                if (bindingList.Count > 0)
+                {
+                    bindingsDictionary[action.id.ToString()] = bindingList;
                 }
             }
         }
+
+        string bindingsJson = JsonConvert.SerializeObject(bindingsDictionary);
+        PlayerPrefs.SetString("actionAsset_bindings", bindingsJson);
         PlayerPrefs.Save();
+        Debug.Log("저장됨");
     }
 
     public void LoadBindings()
     {
-        foreach (var map in actionAsset.actionMaps)
+        string bindingsJson = PlayerPrefs.GetString("actionAsset_bindings", string.Empty);
+        if (!string.IsNullOrEmpty(bindingsJson))
         {
-            foreach (var binding in map.bindings)
+            var bindingsDictionary = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(bindingsJson);
+            foreach (var actionMap in actionAsset.actionMaps)
             {
-                if (PlayerPrefs.HasKey(binding.id.ToString()))
+                foreach (var action in actionMap)
                 {
-                    var overridePath = PlayerPrefs.GetString(binding.id.ToString());
-
-                    map.ApplyBindingOverride(new InputBinding { id = binding.id, overridePath = overridePath });
+                    if (bindingsDictionary.TryGetValue(action.id.ToString(), out var bindingList))
+                    {
+                        for (int i = 0; i < bindingList.Count && i < action.bindings.Count; i++)
+                        {
+                            action.ApplyBindingOverride(i, bindingList[i]);
+                        }
+                    }
                 }
             }
+            Debug.Log("로드됨");
         }
+        else
+        {
+            Debug.Log("로드 실패");
+        }
+    }
+
+    public void UpdateAllBindingButtonTexts()
+    {
+        // 모든 Keybinding 인스턴스에 대해 UpdateBindingButtonText 호출
+        foreach (var keybinding in FindObjectsOfType<Keybinding>(true))
+        {
+            keybinding.UpdateBindingButtonText();
+        }
+    }
+
+    public void LoadBindingsAndUpdateUI()
+    {
+        LoadBindings(); // 바인딩 로드
+        UpdateAllBindingButtonTexts(); // UI 업데이트
     }
 }

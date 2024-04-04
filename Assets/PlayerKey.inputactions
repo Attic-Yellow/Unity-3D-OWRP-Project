@@ -47,6 +47,17 @@
                 },
                 {
                     "name": "",
+                    "id": "d242d366-c85d-4206-9036-25ec671b301e",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Character",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "94528e40-c643-4e93-b316-5b689fcb1352",
                     "path": "<Keyboard>/i",
                     "interactions": "",
@@ -58,8 +69,30 @@
                 },
                 {
                     "name": "",
+                    "id": "a8c6e95d-1752-4741-869d-8b82474a3172",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Inventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "61b95fc4-ca52-4c39-8bef-5a795ad218df",
                     "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Equipped",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c727730e-e71c-4d84-a0d4-f7925808c175",
+                    "path": "",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
