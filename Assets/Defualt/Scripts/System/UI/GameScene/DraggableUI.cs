@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Unity.VisualScripting;
 
 public class DraggableUI : MonoBehaviour, IDragHandler, IPointerDownHandler
 {
-    private RectTransform rectTransform;
+    [SerializeField] private RectTransform rectTransform;
     private Vector2 offset;
 
     private void Awake()
@@ -16,6 +17,7 @@ public class DraggableUI : MonoBehaviour, IDragHandler, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        OnPointerUp(eventData);
         // 마우스 클릭 위치와 UI 요소의 중심 위치의 차이를 계산하여 오프셋을 설정
         RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, eventData.position, eventData.pressEventCamera, out offset);
     }
@@ -27,5 +29,10 @@ public class DraggableUI : MonoBehaviour, IDragHandler, IPointerDownHandler
         {
             rectTransform.localPosition = globalMousePos - offset;
         }
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        rectTransform.SetAsLastSibling(); // 드래그 중인 UI 요소를 최상위로 배치
     }
 }

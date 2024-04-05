@@ -27,6 +27,11 @@ public class InventoryUI : MonoBehaviour
         if (inventoryUI != null)
         {
             inventoryUI.SetActive(!inventoryUI.activeInHierarchy);
+
+            if (inventoryUI.activeSelf)
+            {
+                inventoryUI.transform.SetAsLastSibling();
+            }
         }
     }
 

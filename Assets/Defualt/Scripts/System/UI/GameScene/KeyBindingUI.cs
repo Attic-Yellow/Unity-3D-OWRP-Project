@@ -27,6 +27,11 @@ public class KeyBindingUI : MonoBehaviour
         if (keyBindingUI != null)
         {
             keyBindingUI.SetActive(!keyBindingUI.activeInHierarchy);
+            
+            if (keyBindingUI.activeSelf)
+            {
+                keyBindingUI.transform.SetAsLastSibling();
+            }
         }
     }
 

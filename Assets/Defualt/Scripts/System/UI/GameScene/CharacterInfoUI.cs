@@ -87,6 +87,11 @@ public class CharacterInfoUI : MonoBehaviour
         if (characterInfoUI != null)
         {
             characterInfoUI.SetActive(!characterInfoUI.activeInHierarchy);
+
+            if (characterInfoUI.activeSelf)
+            {
+                characterInfoUI.transform.SetAsLastSibling();
+            }
         }
     }
 }

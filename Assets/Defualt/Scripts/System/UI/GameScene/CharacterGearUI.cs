@@ -30,6 +30,11 @@ public class CharacterGearUI : MonoBehaviour
         if (characterGearUI != null)
         {
             characterGearUI.SetActive(!characterGearUI.activeInHierarchy);
+
+            if (characterGearUI.activeSelf)
+            {
+                characterGearUI.transform.SetAsLastSibling();
+            }
         }
     }
 
