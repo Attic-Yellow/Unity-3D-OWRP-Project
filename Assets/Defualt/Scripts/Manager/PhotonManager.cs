@@ -2,7 +2,6 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using UnityEngine;
-using TMPro; // TextMeshPro를 사용하기 위해 추가
 
 public class PhotonManager : MonoBehaviourPunCallbacks
 {
@@ -10,7 +9,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
      
     public string roomName;
     public string lobbyName = "ExampleLobby";
-    private string gameVersion = "1.0"; // 게임 버전, 호환성을 위해 사용됨
+    private string gameVersion = "1.0"; // 게임 버전, 호환성을 위해 사용
 
     private void Awake()
     {
@@ -43,7 +42,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
-    // 포톤 서버에 성공적으로 연결되었을 때 호출됨
+    // 포톤 서버에 성공적으로 연결되었을 때 호출
     public override void OnConnectedToMaster()
     {
         print("포톤 서버에 연결되었습니다.");
@@ -59,8 +58,10 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         
     }
 
+    // 로비에 성공적으로 참여하였을 때 호출
     public override void OnJoinedLobby()
     {
+        GameManager.Instance.sceneLoadManager.JoiningServer(30);
         print(GameManager.Instance.GetIsManager());
         print(lobbyName); 
         if (GameManager.Instance.GetIsManager())
@@ -70,35 +71,37 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             roomOptions.IsOpen = true;
             roomOptions.MaxPlayers = 20; // 최대 플레이어 수 설정
             print(roomName);
-            // 관리자인 경우 방 생성
-            PhotonNetwork.CreateRoom(roomName, roomOptions);
+            
+            PhotonNetwork.CreateRoom(roomName, roomOptions); // 관리자인 경우 방 생성
         }
         else
         {
             print(roomName);
-            // 일반 사용자인 경우 방 참여
-            PhotonNetwork.JoinRoom(roomName);
+            PhotonNetwork.JoinRoom(roomName); // 일반 사용자인 경우 방 참여
         }
     }
 
+    // 방에 성공적으로 참여하였을 때 호출
     public override void OnJoinedRoom()
     {
-        // 방에 성공적으로 참여한 후 게임 씬으로 이동
-        GameManager.Instance.sceneLoadManager.LoadScene("GameScene");
+        GameManager.Instance.sceneLoadManager.JoiningServer(70); // 방에 성공적으로 참여한 후 게임 씬으로 이동
     }
 
+    // 방을 성공적으로 생성했을 때 호출
     public override void OnCreatedRoom()
     {
-        GameManager.Instance.sceneLoadManager.LoadScene("GameScene");
+        GameManager.Instance.sceneLoadManager.JoiningServer(70);
     }
 
+    // 방 생성에 실패하였을 때 호출
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        Debug.Log("방 생성 실패: " + message);
+        print($"방 생성 실패: {message}");
     }
 
+    // 방 참여에 실패하였을 때 호출
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        Debug.Log("방 참여 실패: " + message);
+        Debug.Log($"방 참여 실패: {message}");
     }
 }

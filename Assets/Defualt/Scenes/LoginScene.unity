@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3704,6 +3704,7 @@ RectTransform:
   - {fileID: 1679320891}
   - {fileID: 1799355987}
   - {fileID: 1422708050}
+  - {fileID: 1742711765}
   m_Father: {fileID: 1297149691}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4197,6 +4198,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1470398555}
   - component: {fileID: 1470398556}
+  - component: {fileID: 1470398557}
   m_Layer: 0
   m_Name: Account System
   m_TagString: Untagged
@@ -4233,8 +4235,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   idInputField: {fileID: 818281127}
   passwordInputField: {fileID: 2106668889}
+  signinButton: {fileID: 1573521318}
+  signupGoButton: {fileID: 1675879250}
+  signupButton: {fileID: 1940655439}
+  evButton: {fileID: 574555796}
   email: 
   password: 
+--- !u!114 &1470398557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1470398554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 23d37da53d04f554fbc1a4e5fc9568b6,
+    type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Login
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &1533280916
 GameObject:
   m_ObjectHideFlags: 0
@@ -5414,6 +5451,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1737453912}
   m_CullTransparentMesh: 1
+--- !u!1 &1742711764
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1742711765}
+  - component: {fileID: 1742711766}
+  m_Layer: 0
+  m_Name: LoadingScene Target
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1742711765
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1742711764}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1301116702}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &1742711766
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1742711764}
+  m_CullTransparentMesh: 1
 --- !u!1 &1799355986
 GameObject:
   m_ObjectHideFlags: 0
@@ -5727,6 +5809,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 037ab1da5214ad34d8d1f791bd76eaeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  loadingUIController: {fileID: 0}
+  loadingUIPrefab: {fileID: 395368867260900273, guid: be6ec94116b1f524093da0a500f77c00,
+    type: 3}
 --- !u!1 &1907647542
 GameObject:
   m_ObjectHideFlags: 0

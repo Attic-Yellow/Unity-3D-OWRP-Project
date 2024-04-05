@@ -4,14 +4,23 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class AccountSystem : MonoBehaviour
 {
     [SerializeField] private TMP_InputField idInputField;
     [SerializeField] private TMP_InputField passwordInputField;
+    [SerializeField] private Button signinButton;
+    [SerializeField] private Button signupGoButton;
+    [SerializeField] private Button signupButton;
+    [SerializeField] private Button evButton;
 
     [SerializeField] private string email;
     [SerializeField] private string password;
+
+    private int currentIndex = 0;
 
     /***버튼 콜벡 메서드***/
 
@@ -28,6 +37,7 @@ public class AccountSystem : MonoBehaviour
         StartCoroutine(SigninCoroutine(idInputField.text, passwordInputField.text));
     }
 
+    // 회원 가입 버튼 콜백
     public void OnSignupButtonCallBack()
     {
         GameManager.Instance.authManager.SignUpWithEmail(idInputField.text, passwordInputField.text, (signUpSuccess, emailSent) =>
@@ -101,5 +111,82 @@ public class AccountSystem : MonoBehaviour
     {
         idInputField.text = "";
         passwordInputField.text = "";
+    }
+
+    private void OnNext(InputValue value)
+    {
+        int index = GameManager.Instance.uiManager.startSceneUI.accountUI.GetCurrentAreaIndex();
+
+        print(index);
+        print(currentIndex);
+        switch (currentIndex)
+        {
+            case 0:
+                EventSystem.current.SetSelectedGameObject(idInputField.gameObject, null);
+                idInputField.OnPointerClick(new PointerEventData(EventSystem.current)); // 포커스와 함께 클릭 이벤트도 발생
+                currentIndex++;
+                break;
+            case 1:
+                EventSystem.current.SetSelectedGameObject(passwordInputField.gameObject, null);
+                passwordInputField.OnPointerClick(new PointerEventData(EventSystem.current)); // 포커스와 함께 클릭 이벤트도 발생
+                currentIndex++;
+                break;
+            case 2:
+                EventSystem.current.SetSelectedGameObject(signinButton.gameObject, null);
+                currentIndex++;
+                break;
+            case 3:
+                if (index == 0)
+                {
+                    EventSystem.current.SetSelectedGameObject(signupGoButton.gameObject, null);
+                    currentIndex++;
+                }
+                else if (index == 1)
+                {
+                    EventSystem.current.SetSelectedGameObject(signupButton.gameObject, null);
+                }
+                break;
+            case 4:
+                EventSystem.current.SetSelectedGameObject(idInputField.gameObject, null);
+                idInputField.OnPointerClick(new PointerEventData(EventSystem.current));
+                currentIndex = 1;
+                break;
+        }
+    }
+
+    private void OnBack(InputValue value)
+    {
+        print(currentIndex);
+        switch (currentIndex)
+        {
+            case 3:
+                EventSystem.current.SetSelectedGameObject(signupGoButton.gameObject, null);
+                currentIndex--;
+                break;
+            case 2:
+                EventSystem.current.SetSelectedGameObject(passwordInputField.gameObject, null);
+                passwordInputField.OnPointerClick(new PointerEventData(EventSystem.current));
+                currentIndex--;
+                break;
+            case 1:
+                EventSystem.current.SetSelectedGameObject(idInputField.gameObject, null);
+                idInputField.OnPointerClick(new PointerEventData(EventSystem.current)); 
+                currentIndex--;
+                break;
+        }    
+    }
+
+    private void OnEnter(InputValue value)
+    {
+        switch (currentIndex)
+        {
+            case 1:
+                EventSystem.current.SetSelectedGameObject(passwordInputField.gameObject, null);
+                passwordInputField.OnPointerClick(new PointerEventData(EventSystem.current));
+                break;
+            case 2:
+                signinButton.OnPointerClick(new PointerEventData(EventSystem.current));
+                break;
+        }
     }
 }

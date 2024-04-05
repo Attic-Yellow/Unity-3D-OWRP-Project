@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class AccountUI : MonoBehaviour
 {
@@ -116,5 +118,10 @@ public class AccountUI : MonoBehaviour
         yield return new WaitUntil(() => GameManager.Instance.GetIsSignInSuccess());
 
         Init();
+    }
+
+    public int GetCurrentAreaIndex()
+    {
+        return currentAreaIndex;
     }
 }
