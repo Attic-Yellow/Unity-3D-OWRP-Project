@@ -23,6 +23,8 @@ public class AccountSystem : MonoBehaviour
             Debug.LogError("특수문자 포함해서 8자리 이상 만들 것"); // 특수문자가 포함되지 않은 경우 에러 메시지 출력
             return; // 여기서 함수 실행을 중단
         }
+
+        GameManager.Instance.uiManager.startSceneUI.LoadingAreaController(); // 로딩 화면 활성화
         StartCoroutine(SigninCoroutine(idInputField.text, passwordInputField.text));
     }
 
@@ -36,6 +38,7 @@ public class AccountSystem : MonoBehaviour
                 password = passwordInputField.text;
                 Debug.Log("회원가입 성공 및 이메일 인증 링크 전송 완료");
                 InitInputField();
+                GameManager.Instance.uiManager.startSceneUI.LoadingAreaController(); // 로딩 화면 비활성화
                 return;
             }
             else if (signUpSuccess)
@@ -54,6 +57,7 @@ public class AccountSystem : MonoBehaviour
     // 이메일 인증 확인 버튼 콜백
     public void OnCompleteEVButtonCallBack()
     {
+        GameManager.Instance.uiManager.startSceneUI.LoadingAreaController(); // 로딩 화면 활성화
         GameManager.Instance.authManager.CheckEmailVerification((isVerified) =>
         {
             if (isVerified)
@@ -89,6 +93,7 @@ public class AccountSystem : MonoBehaviour
             yield return new WaitUntil(() => GameManager.Instance.GetIsSignInSuccess());
             InitInputField();
             GameManager.Instance.uiManager.startSceneUI.OnAccountButtonClick(true);
+            GameManager.Instance.uiManager.startSceneUI.LoadingAreaController(); // 로딩 화면 비활성화
         }
     }
 

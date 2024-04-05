@@ -8,6 +8,7 @@ public class StartSceneUI : MonoBehaviour
     public AccountUI accountUI;
 
     [SerializeField] private GameObject accountUIPage;
+    [SerializeField] private GameObject loadingArea;
 
     [SerializeField] private GameObject acoountButton;
     [SerializeField] private GameObject startButton;
@@ -23,6 +24,11 @@ public class StartSceneUI : MonoBehaviour
         if (accountUIPage != null)
         {
             accountUIPage.SetActive(false);
+        }
+
+        if (loadingArea != null)
+        {
+            loadingArea.SetActive(false);
         }
 
         if (acoountButton != null)
@@ -56,6 +62,15 @@ public class StartSceneUI : MonoBehaviour
         if (acoountButton != null)
         {
             acoountButton.SetActive(!acoountButton.activeInHierarchy);
+        }
+    }
+
+    // 로딩 화면 활성화/비활성화 컨트롤러 메서드
+    public void LoadingAreaController()
+    {
+        if (loadingArea != null)
+        {
+            loadingArea.SetActive(!loadingArea.activeInHierarchy);
         }
     }
 

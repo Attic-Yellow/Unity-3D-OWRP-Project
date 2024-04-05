@@ -89,6 +89,7 @@ public class AccountUI : MonoBehaviour
         if (index == 2)
         {
             AccountSystem accountSystem = FindAnyObjectByType<AccountSystem>();
+            GameManager.Instance.uiManager.startSceneUI.LoadingAreaController(); // 로딩 화면 활성화
             accountSystem.OnSignupButtonCallBack();
         }
         currentAreaIndex = index;
@@ -106,7 +107,6 @@ public class AccountUI : MonoBehaviour
     public void OnCompleteEVButtonClick()
     {
         StartCoroutine(EVCallBackCoroutine());
-        Init();
     }
 
     private IEnumerator EVCallBackCoroutine()
@@ -114,5 +114,7 @@ public class AccountUI : MonoBehaviour
         AccountSystem accountSystem = FindAnyObjectByType<AccountSystem>();
         accountSystem.OnCompleteEVButtonCallBack();
         yield return new WaitUntil(() => GameManager.Instance.GetIsSignInSuccess());
+
+        Init();
     }
 }
