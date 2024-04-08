@@ -35,41 +35,19 @@
             ],
             "bindings": [
                 {
-                    "name": "C [Keyboard]",
-                    "id": "19b19b2c-3f46-4e13-89a9-dbf310b6b360",
-                    "path": "ButtonWithOneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Character",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "Modifier",
-                    "id": "23ebd4c5-abe0-49c1-b6a6-305bb162af19",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Character",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "Button",
-                    "id": "ec09d13f-d6bd-49f5-8797-3cbbfd086c54",
+                    "name": "",
+                    "id": "d242d366-c85d-4206-9036-25ec671b301e",
                     "path": "<Keyboard>/c",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Character",
                     "isComposite": false,
-                    "isPartOfComposite": true
+                    "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "d242d366-c85d-4206-9036-25ec671b301e",
+                    "id": "70e06080-8410-4749-a947-5349bb6df283",
                     "path": "",
                     "interactions": "",
                     "processors": "",
