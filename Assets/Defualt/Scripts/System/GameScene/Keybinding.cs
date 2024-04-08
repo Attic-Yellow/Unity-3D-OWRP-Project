@@ -2,18 +2,21 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using static UnityEngine.InputSystem.InputActionRebindingExtensions;
 
 public class Keybinding : MonoBehaviour
 {
     public InputActionAsset actionAsset;
     [SerializeField] private InputAction actionToRebind;
-    [SerializeField] private string playerActionMapName = "Player";
     [SerializeField] private string bindName;
     [SerializeField] private TMP_Text bindingButtonText;
     [SerializeField] private int bindingIndex;
+
+    private bool isComposite = false;
 
     private void Start()
     {
@@ -33,7 +36,7 @@ public class Keybinding : MonoBehaviour
 
         if (actionToRebind != null)
         {
-            RebindKey(actionToRebind);
+            StartCoroutine(RebindKey());
         }
         else
         {
@@ -41,25 +44,37 @@ public class Keybinding : MonoBehaviour
         }
     }
 
-    public void RebindKey(InputAction action)
+    private IEnumerator RebindKey()
     {
-        action.Disable();
+        bool isComposite = false;
+        string firstBinding = "";
 
-        // 이미 존재하는 바인딩 인덱스인지 확인하고, 맞다면 해당 바인딩 업데이트
-        if (action.bindings.Count > bindingIndex)
+        // 첫 번째 키 바인딩
+        yield return StartCoroutine(RebindingCoroutine(actionToRebind, bindingIndex + 1, (binding) => {
+            firstBinding = binding;
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftAlt))
+            {
+                isComposite = true;
+            }
+        }));
+
+        if (isComposite)
         {
-            action.RemoveBindingOverride(bindingIndex); // 기존 바인딩 제거
+            // 복합 키의 경우, 두 번째 키 바인딩 시작
+            yield return StartCoroutine(RebindingCoroutine(actionToRebind, bindingIndex + 2, _ => { }));
+        }
+        else
+        {
+            // 단일 키의 경우, 첫 번째 바인딩을 두 번째 키에도 적용
+            actionToRebind.ApplyBindingOverride(bindingIndex + 1, firstBinding);
+            actionToRebind.ApplyBindingOverride(bindingIndex + 2, firstBinding);
         }
 
-        action.ChangeBinding(bindingIndex).NextCompositeBinding();
+        print(actionToRebind.GetBindingDisplayString(bindingIndex + 1));
+        print(actionToRebind.GetBindingDisplayString(bindingIndex + 2));
 
-        var rebindOperation = action.PerformInteractiveRebinding(bindingIndex)
-         // 필요한 경우, 특정 키 조합을 제외시킬 수 있습니다.
-         .WithControlsExcluding("Mouse")
-         .OnMatchWaitForAnother(0.1f) // 사용자가 실수로 두 번 입력하는 것을 방지
-         .OnComplete(operation => operation.Dispose());
-
-        rebindOperation.Start();
+        GameManager.Instance.SetIsRebinding(false);
+        UpdateBindingButtonText();
     }
 
     private void OnRebindComplete(InputActionRebindingExtensions.RebindingOperation operation, InputAction action)
@@ -81,7 +96,14 @@ public class Keybinding : MonoBehaviour
         InputAction action = actionAsset.FindAction(bindName, throwIfNotFound: false);
         if (action != null)
         {
-            bindingButtonText.text = action.GetBindingDisplayString(bindingIndex);
+            if (action.GetBindingDisplayString(bindingIndex + 1) == action.GetBindingDisplayString(bindingIndex + 2))
+            {
+                bindingButtonText.text = action.GetBindingDisplayString(bindingIndex + 1);
+            }
+            else
+            {
+                bindingButtonText.text = $"{action.GetBindingDisplayString(bindingIndex + 1)} + {action.GetBindingDisplayString(bindingIndex + 2)}";
+            }
         }
         else
         {
@@ -89,32 +111,29 @@ public class Keybinding : MonoBehaviour
         }
     }
 
-    private IEnumerator Rebinding(InputAction action)
+    private IEnumerator RebindingCoroutine(InputAction action, int targetBindingIndex, Action<string> onBindingComplete)
     {
-        while (true)
-        {
-            if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.LeftAlt))
-            {
-                yield break;
-            }
-            else if (Input.anyKeyDown)
-            {
-                // 이미 존재하는 바인딩 인덱스인지 확인하고, 맞다면 해당 바인딩 업데이트
-                if (action.bindings.Count > bindingIndex)
+        action.Disable();
+        var rebindOperation = action.PerformInteractiveRebinding(targetBindingIndex)
+            .WithControlsExcluding("Mouse")
+            .OnMatchWaitForAnother(0.1f)
+            .OnComplete((op) => {
+                if (op.selectedControl != null)
                 {
-                    action.RemoveBindingOverride(bindingIndex); // 기존 바인딩 제거
+                    // 선택된 컨트롤이 있으면, 해당 경로를 반환
+                    onBindingComplete(op.selectedControl.path);
                 }
+                else
+                {
+                    // 선택된 컨트롤이 없으면, null을 반환하여 이를 처리할 수 있도록 함
+                    onBindingComplete(null);
+                }
+            })
+            .Start();
 
-                var rebindOperation = action.PerformInteractiveRebinding(bindingIndex)
-                    .WithTargetBinding(bindingIndex + 1)
-                    .WithControlsExcluding("Mouse") // 마우스 입력은 제외
-                    .OnMatchWaitForAnother(0.2f)
-                    .OnComplete(operation => OnRebindComplete(operation, action)) // 재바인딩 완료 콜백
-                    .Start(); // 재바인딩 시작
+        yield return new WaitUntil(() => rebindOperation.completed);
 
-                yield break;
-            }
-        }
-        
+        rebindOperation.Dispose();
+        action.Enable();
     }
 }

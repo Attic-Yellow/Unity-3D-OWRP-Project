@@ -90,7 +90,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     // 방을 성공적으로 생성했을 때 호출
     public override void OnCreatedRoom()
     {
-        GameManager.Instance.sceneLoadManager.JoiningServer(70);
+        // GameManager.Instance.sceneLoadManager.JoiningServer(70);
     }
 
     // 방 생성에 실패하였을 때 호출

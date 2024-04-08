@@ -60,7 +60,10 @@ public class SceneLoadingUIController : MonoBehaviour
             loadingText.text = $"{currentProgress}%";
             yield return new WaitForSeconds(Random.Range(0.01f, 0.05f));
         }
-        StartCoroutine(LoadAsyncGameScene("GameScene"));
+        if (currentProgress == 70)
+        {
+            StartCoroutine(LoadAsyncGameScene("GameScene"));
+        }
     }
 
     IEnumerator LoadAsyncGameScene(string sceneName)

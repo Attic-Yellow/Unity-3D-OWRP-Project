@@ -63,11 +63,11 @@ public class BindingSave : MonoBehaviour
                     }
                 }
             }
-            Debug.Log("로드됨");
+            print("로드됨");
         }
         else
         {
-            Debug.Log("로드 실패");
+            print("로드 실패");
         }
     }
 
