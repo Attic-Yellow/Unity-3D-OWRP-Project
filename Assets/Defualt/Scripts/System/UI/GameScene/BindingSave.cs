@@ -58,7 +58,7 @@ public class BindingSave : MonoBehaviour
                     {
                         for (int i = 0; i < bindingList.Count && i < action.bindings.Count; i++)
                         {
-                            action.ApplyBindingOverride(i, bindingList[i]);
+                                action.ApplyBindingOverride(bindingList[i]);
                         }
                     }
                 }

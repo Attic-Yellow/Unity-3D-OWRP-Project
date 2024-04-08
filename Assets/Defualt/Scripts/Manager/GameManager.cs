@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // PlayerPrefs.DeleteAll(); // 테스트용 코드
+        PlayerPrefs.DeleteAll(); // 테스트용 코드
     }
 
     private void Start()

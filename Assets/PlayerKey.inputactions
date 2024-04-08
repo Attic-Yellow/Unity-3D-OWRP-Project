@@ -6,7 +6,7 @@
             "id": "1fb13619-d3c8-4e5d-874c-f70399727e96",
             "actions": [
                 {
-                    "name": "Character",
+                    "name": "Character1",
                     "type": "Button",
                     "id": "8e2478cb-aaab-430c-af7b-f6e284087f9f",
                     "expectedControlType": "Button",
@@ -15,7 +15,16 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Inventory",
+                    "name": "Character2",
+                    "type": "Button",
+                    "id": "d54439df-c80d-45ef-8962-951963cada05",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Inventory1",
                     "type": "Button",
                     "id": "8624a6b8-0e0f-4c16-ab70-0f09b0a23c08",
                     "expectedControlType": "Button",
@@ -24,9 +33,27 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Equipped",
+                    "name": "Inventory2",
+                    "type": "Button",
+                    "id": "744387e7-06e2-4dd9-b9cd-0b1ecc7b1f85",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Equipped1",
                     "type": "Button",
                     "id": "a2e9ff58-eee7-43b1-9da2-864abd1694cb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Equipped2",
+                    "type": "Button",
+                    "id": "cabd954c-4874-4c84-ab86-2f58d3a7ff80",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -35,70 +62,202 @@
             ],
             "bindings": [
                 {
-                    "name": "",
-                    "id": "d242d366-c85d-4206-9036-25ec671b301e",
+                    "name": "One Modifier",
+                    "id": "b10b9059-7504-40fb-80d8-ebb7d79f836c",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Character1",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Modifier",
+                    "id": "eed969b1-9681-4823-a185-ad6d300135fe",
                     "path": "<Keyboard>/c",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Character",
+                    "action": "Character1",
                     "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Binding",
+                    "id": "dc72ead9-65cd-4737-ae97-8e9f3f563a63",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Character1",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "3c85b444-6f2d-436b-b6eb-677f02b7b3ae",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Character2",
+                    "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "70e06080-8410-4749-a947-5349bb6df283",
+                    "name": "modifier",
+                    "id": "5732c3df-6d52-4c26-a03c-bf2a1e276923",
                     "path": "",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Character",
+                    "action": "Character2",
                     "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "d7502bdc-39cc-4f3a-afd4-136f5d4a1b76",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Character2",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "3a1ef042-c0a7-4248-bb36-153d044254ea",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Inventory1",
+                    "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "94528e40-c643-4e93-b316-5b689fcb1352",
+                    "name": "modifier",
+                    "id": "121857cd-7371-47ea-9bed-fa12bec9b4a6",
                     "path": "<Keyboard>/i",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Inventory",
+                    "action": "Inventory1",
                     "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "665715c3-96de-4032-9f5c-94e1017efa2d",
+                    "path": "<Keyboard>/i",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Inventory1",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "26765c7b-a9f1-45e9-a28d-f5ca8bb7ba56",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Inventory2",
+                    "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "a8c6e95d-1752-4741-869d-8b82474a3172",
+                    "name": "modifier",
+                    "id": "caf7d1a8-2b02-45bd-acaf-9d933060a20b",
                     "path": "",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Inventory",
+                    "action": "Inventory2",
                     "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "1473992b-f37f-4330-a024-c9beffdb53b2",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Inventory2",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "71a900ee-e5de-4b88-bf47-219216a237ff",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Equipped1",
+                    "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "61b95fc4-ca52-4c39-8bef-5a795ad218df",
+                    "name": "modifier",
+                    "id": "5a6f18e4-052d-499b-b24a-651b189f296a",
                     "path": "<Keyboard>/b",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Equipped",
+                    "action": "Equipped1",
                     "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "d263fc08-b867-4140-aec3-82c523fee086",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Equipped1",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "8fbf81df-4a4f-4f23-89ef-394bcb061596",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Equipped2",
+                    "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "c727730e-e71c-4d84-a0d4-f7925808c175",
+                    "name": "modifier",
+                    "id": "3836ce98-fc22-4511-9439-704fd4d11f74",
                     "path": "",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Equipped",
+                    "action": "Equipped2",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "fae0be36-3a55-4c90-bb1b-00edc38d9743",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Equipped2",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },
