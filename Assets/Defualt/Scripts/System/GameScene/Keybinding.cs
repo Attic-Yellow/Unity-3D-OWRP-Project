@@ -21,7 +21,6 @@ public class Keybinding : MonoBehaviour
     private void Start()
     {
         actionToRebind = actionAsset.FindAction(bindName, true);
-        bindingIndex = actionToRebind.GetBindingIndex();
     }
 
     public void StartRebindingProcess()
@@ -50,7 +49,7 @@ public class Keybinding : MonoBehaviour
         string firstBinding = "";
 
         // 첫 번째 키 바인딩
-        yield return StartCoroutine(RebindingCoroutine(actionToRebind, bindingIndex + 1, (binding) => {
+        yield return StartCoroutine(RebindingCoroutine(actionToRebind, bindingIndex, (binding) => {
             firstBinding = binding;
             if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftAlt))
             {
@@ -61,17 +60,14 @@ public class Keybinding : MonoBehaviour
         if (isComposite)
         {
             // 복합 키의 경우, 두 번째 키 바인딩 시작
-            yield return StartCoroutine(RebindingCoroutine(actionToRebind, bindingIndex + 2, _ => { }));
+            yield return StartCoroutine(RebindingCoroutine(actionToRebind, bindingIndex + 1, _ => { }));
         }
         else
         {
             // 단일 키의 경우, 첫 번째 바인딩을 두 번째 키에도 적용
+            actionToRebind.ApplyBindingOverride(bindingIndex, firstBinding);
             actionToRebind.ApplyBindingOverride(bindingIndex + 1, firstBinding);
-            actionToRebind.ApplyBindingOverride(bindingIndex + 2, firstBinding);
         }
-
-        print(actionToRebind.GetBindingDisplayString(bindingIndex + 1));
-        print(actionToRebind.GetBindingDisplayString(bindingIndex + 2));
 
         GameManager.Instance.SetIsRebinding(false);
         UpdateBindingButtonText();
@@ -96,13 +92,13 @@ public class Keybinding : MonoBehaviour
         InputAction action = actionAsset.FindAction(bindName, throwIfNotFound: false);
         if (action != null)
         {
-            if (action.GetBindingDisplayString(bindingIndex + 1) == action.GetBindingDisplayString(bindingIndex + 2))
+            if (action.GetBindingDisplayString(bindingIndex) == action.GetBindingDisplayString(bindingIndex + 1))
             {
-                bindingButtonText.text = action.GetBindingDisplayString(bindingIndex + 1);
+                bindingButtonText.text = action.GetBindingDisplayString(bindingIndex);
             }
             else
             {
-                bindingButtonText.text = $"{action.GetBindingDisplayString(bindingIndex + 1)} + {action.GetBindingDisplayString(bindingIndex + 2)}";
+                bindingButtonText.text = $"{action.GetBindingDisplayString(bindingIndex)} + {action.GetBindingDisplayString(bindingIndex + 1)}";
             }
         }
         else
