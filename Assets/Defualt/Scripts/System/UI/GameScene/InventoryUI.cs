@@ -6,6 +6,9 @@ public class InventoryUI : MonoBehaviour
 {
     [SerializeField] private GameObject inventoryUI;
     [SerializeField] private List<GameObject> inventorySlotAreas;
+    [SerializeField] private List<InventorySlot> inventorySlots;
+
+    [SerializeField] private Inventory inventory;
 
     private void Awake()
     {
@@ -14,6 +17,16 @@ public class InventoryUI : MonoBehaviour
 
     private void Start()
     {
+        inventory = Inventory.Instance;
+        inventory.onChangeItem += ReadrawSlotUI;
+        for (int i = 0; i < inventorySlotAreas.Count; i++)
+        {
+            foreach (var slot in inventorySlotAreas[i].GetComponentsInChildren<InventorySlot>())
+            {
+                inventorySlots.Add(slot);
+            }
+        }
+
         if (inventoryUI != null)
         {
             inventoryUI.SetActive(false);
@@ -43,6 +56,19 @@ public class InventoryUI : MonoBehaviour
             {
                 inventorySlotAreas[i].SetActive(i == index);
             }
+        }
+    }
+
+    public void ReadrawSlotUI()
+    {
+        for (int i = 0; i < inventorySlots.Count; i++)
+        {
+            inventorySlots[i].ClearSlot();
+        }
+        for (int i = 0; i < inventory.items.Count; i++)
+        {
+            inventorySlots[i].item = inventory.items[i];
+            inventorySlots[i].UpdateSlotUI();
         }
     }
 }
