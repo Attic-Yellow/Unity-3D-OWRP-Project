@@ -6,6 +6,17 @@ public class CharacterGearUI : MonoBehaviour
 {
     [SerializeField] private GameObject characterGearUI;
     [SerializeField] private List<GameObject> characterGears;
+    [SerializeField] private List<EquippedSlot> weaponSlot;
+    [SerializeField] private List<EquippedSlot> headSlot;
+    [SerializeField] private List<EquippedSlot> bodySlot;
+    [SerializeField] private List<EquippedSlot> handsSlot;
+    [SerializeField] private List<EquippedSlot> legsSlot;
+    [SerializeField] private List<EquippedSlot> feetSlot;
+    [SerializeField] private List<EquippedSlot> auxiliarySlot;
+    [SerializeField] private List<EquippedSlot> earringSlot;
+    [SerializeField] private List<EquippedSlot> necklaceSlot;
+    [SerializeField] private List<EquippedSlot> braceletSlot;
+    [SerializeField] private List<EquippedSlot> ringSlot;
 
     private void Awake()
     {

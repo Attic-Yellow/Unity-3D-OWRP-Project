@@ -15,4 +15,6 @@ public class ItemData : MonoBehaviour
     }
 
     public List<Item> items = new List<Item>();
+    public List<Equipment> equip = new List<Equipment>();
+
 }
