@@ -1231,6 +1231,34 @@
                     "isPartOfComposite": true
                 }
             ]
+        },
+        {
+            "name": "Chat",
+            "id": "0bab00c2-9e08-4e78-a801-30922de7bc7a",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "5e0bf358-f6c9-4804-a5d4-6f17f0f0b78d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d817d029-4b6e-4ad8-a627-2d40c291e8c3",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
