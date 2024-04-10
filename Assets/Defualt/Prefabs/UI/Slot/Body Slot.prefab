@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1912927190864249310}
   m_Layer: 0
   m_Name: Body Slot
-  m_TagString: Untagged
+  m_TagString: Slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -90,11 +90,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6988a94ecba36804dbbe4a251c087e41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 7112121882949613027}
+  equipmentType: 3
   equipment:
     itemType: 0
     itemName: 
     itemImage: {fileID: 0}
+    itemId: 0
     equipment: 0
     grede: 0
     str: 0

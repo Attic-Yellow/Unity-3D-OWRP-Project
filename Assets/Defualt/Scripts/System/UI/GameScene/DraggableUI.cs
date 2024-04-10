@@ -5,34 +5,36 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Unity.VisualScripting;
 
-public class DraggableUI : MonoBehaviour, IDragHandler, IPointerDownHandler
+public class DraggableUI : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndDragHandler
 {
-    [SerializeField] private RectTransform rectTransform;
+    [SerializeField] private RectTransform windowRectTransform;
+    [SerializeField] private RectTransform dragAreaRectTransform;
     private Vector2 offset;
-
-    private void Awake()
-    {
-        rectTransform = GetComponent<RectTransform>();
-    }
+    private bool isDragging = false;
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        OnPointerUp(eventData);
-        // 마우스 클릭 위치와 UI 요소의 중심 위치의 차이를 계산하여 오프셋을 설정
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, eventData.position, eventData.pressEventCamera, out offset);
+        windowRectTransform.SetAsLastSibling(); // 클릭 시 해당 창을 최상위로 이동
+
+        if (RectTransformUtility.RectangleContainsScreenPoint(dragAreaRectTransform, eventData.position, eventData.pressEventCamera))
+        {
+            Vector2 mousePosition = RectTransformUtility.WorldToScreenPoint(eventData.pressEventCamera, eventData.position);
+            offset = (Vector2)windowRectTransform.position - mousePosition;
+            isDragging = true; 
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        // 드래그 중인 위치로 UI 요소를 이동시키되, 오프셋을 적용하여 마우스 커서와의 상대적 위치를 유지
-        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform.parent as RectTransform, eventData.position, eventData.pressEventCamera, out Vector2 globalMousePos))
+        if (isDragging) 
         {
-            rectTransform.localPosition = globalMousePos - offset;
+            Vector2 newPosition = RectTransformUtility.WorldToScreenPoint(eventData.pressEventCamera, eventData.position) + offset;
+            windowRectTransform.position = newPosition;
         }
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+    public void OnEndDrag(PointerEventData eventData)
     {
-        rectTransform.SetAsLastSibling(); // 드래그 중인 UI 요소를 최상위로 배치
+        isDragging = false;
     }
 }

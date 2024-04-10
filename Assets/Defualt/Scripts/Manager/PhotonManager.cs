@@ -52,8 +52,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public void CreateOrJoinRoom(string roomName, string nickname)
     {
         TypedLobby customLobby = new TypedLobby(lobbyName, LobbyType.Default);
-        PhotonNetwork.JoinLobby(customLobby);
         PhotonNetwork.LocalPlayer.NickName = nickname;
+        print(PhotonNetwork.LocalPlayer.NickName);
+        PhotonNetwork.JoinLobby(customLobby);
         this.roomName = roomName;
         
     }

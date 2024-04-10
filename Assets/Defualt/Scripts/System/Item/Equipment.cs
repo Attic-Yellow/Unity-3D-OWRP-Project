@@ -5,6 +5,7 @@ using UnityEngine;
 
 public enum EquipmentType
 {
+    None,
     Weapon,
     Head,
     Body,
@@ -20,6 +21,7 @@ public enum EquipmentType
 
 public enum GradeType
 {
+    None,
     Normal,
     UnRare,
     Rare,

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class Slot : MonoBehaviour
 {
     public Image itemIcon;
+    public EquipmentType equipmentType;
 
     public virtual void UpdateSlotUI()
     {
@@ -16,4 +17,15 @@ public class Slot : MonoBehaviour
     {
 
     }
+
+    public virtual void AssignItem(Item newItem)
+    {
+
+    }
+
+    public virtual void AssignEquipment(Equipment newEquipment)
+    {
+
+    }
+
 }

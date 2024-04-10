@@ -104,14 +104,19 @@ public class CharacterInfoUI : MonoBehaviour
 
     public void ReadrawSlotUI()
     {
-        for (int i = 0; i < currentEquippedSlots.Count; i++)
+        for (int i = 1; i < currentEquippedSlots.Count; i++)
         {
             currentEquippedSlots[i].ClearSlot();
-        }
-        for (int i = 0; i < currentEquipped.currentEquippeds.Count; i++)
-        {
-            currentEquippedSlots[i].equipment = currentEquipped.currentEquippeds[i];
-            currentEquippedSlots[i].UpdateSlotUI();
+
+            if (i < currentEquipped.currentEquippeds.Count && currentEquipped.currentEquippeds[i] != null)
+            {
+                currentEquippedSlots[i].equipment = currentEquipped.currentEquippeds[i];
+                currentEquippedSlots[i].UpdateSlotUI();
+            }
+            else
+            {
+                currentEquippedSlots[i].ClearSlot();
+            }
         }
     }
 }
